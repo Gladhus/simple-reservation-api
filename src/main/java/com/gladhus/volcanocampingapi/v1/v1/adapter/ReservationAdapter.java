@@ -1,10 +1,13 @@
-package com.gladhus.volcanocampingapi.adapter;
+package com.gladhus.volcanocampingapi.v1.v1.adapter;
 
-import com.gladhus.volcanocampingapi.dto.CreateReservationDto;
-import com.gladhus.volcanocampingapi.dto.ReservationDto;
+import com.gladhus.volcanocampingapi.v1.v1.dto.CreateReservationDto;
+import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDto;
 import com.gladhus.volcanocampingapi.exception.GenericException;
-import com.gladhus.volcanocampingapi.mapper.ReservationMapper;
-import com.gladhus.volcanocampingapi.service.ReservationService;
+import com.gladhus.volcanocampingapi.v1.v1.mapper.ReservationMapper;
+import com.gladhus.volcanocampingapi.v1.service.ReservationService;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,5 +41,23 @@ public class ReservationAdapter {
 
     public ReservationDto getReservation(String id) throws GenericException {
         return reservationMapper.mapToDto(reservationService.getReservation(id));
+    }
+
+    public ReservationDto cancelReservation(String id) throws GenericException {
+        hasText(id, "Reservation id is required.");
+
+        return reservationMapper.mapToDto(reservationService.cancelReservation(id));
+    }
+
+    public Set<LocalDate> getAvailabilities(LocalDate startDate, LocalDate endDate) throws GenericException {
+        if (startDate == null) {
+            startDate = LocalDate.now();
+        }
+
+        if (endDate == null) {
+            endDate = LocalDate.now().plus(30, ChronoUnit.DAYS);
+        }
+
+        return reservationService.getAvailabilities(startDate, endDate);
     }
 }

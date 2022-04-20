@@ -1,6 +1,7 @@
 package com.gladhus.volcanocampingapi.domain;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,7 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "reservation")
+@Table
 public class Reservation {
 
     /**
@@ -36,9 +37,9 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
-    private Instant checkin;
+    private LocalDate checkin;
 
-    private Instant checkout;
+    private LocalDate checkout;
 
 
 

@@ -1,9 +1,8 @@
-package com.gladhus.volcanocampingapi.mapper;
+package com.gladhus.volcanocampingapi.v1.v1.mapper;
 
 import com.gladhus.volcanocampingapi.domain.Reservation;
-import com.gladhus.volcanocampingapi.dto.CreateReservationDto;
-import com.gladhus.volcanocampingapi.dto.ReservationDto;
-import java.time.temporal.ChronoUnit;
+import com.gladhus.volcanocampingapi.v1.v1.dto.CreateReservationDto;
+import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDto;
 import org.springframework.stereotype.Component;
 
 @Component

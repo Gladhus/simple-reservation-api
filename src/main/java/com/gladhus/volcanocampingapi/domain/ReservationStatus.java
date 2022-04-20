@@ -1,7 +1,7 @@
 package com.gladhus.volcanocampingapi.domain;
 
 public enum ReservationStatus {
-    ACTIVE, DELETED;
+    ACTIVE, CANCELLED;
 
     @Override
     public String toString() {

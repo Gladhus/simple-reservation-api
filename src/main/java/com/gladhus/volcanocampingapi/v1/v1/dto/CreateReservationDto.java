@@ -1,6 +1,7 @@
-package com.gladhus.volcanocampingapi.dto;
+package com.gladhus.volcanocampingapi.v1.v1.dto;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class CreateReservationDto {
     private String email;
     private String fullName;
-    private Instant checkin;
-    private Instant checkout;
+    private LocalDate checkin;
+    private LocalDate checkout;
 }
