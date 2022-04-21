@@ -31,8 +31,8 @@ public class ReservationAdapter {
     public ReservationDto createReservation(CreateReservationDto createReservationDto) throws GenericException {
         hasText(createReservationDto.getEmail(), "Email is required.");
         hasText(createReservationDto.getFullName(), "Full name is required.");
-        notNull(createReservationDto.getCheckin(), "Check-in date is required.");
-        notNull(createReservationDto.getCheckout(), "Check-out date is required.");
+        notNull(createReservationDto.getCheckin(), "Checkin date is required.");
+        notNull(createReservationDto.getCheckout(), "Checkout date is required.");
 
         return reservationMapper.mapToDto(
                 reservationService.createReservation(
@@ -40,6 +40,8 @@ public class ReservationAdapter {
     }
 
     public ReservationDto getReservation(String id) throws GenericException {
+        hasText(id, "Reservation id is required.");
+
         return reservationMapper.mapToDto(reservationService.getReservation(id));
     }
 
@@ -49,15 +51,15 @@ public class ReservationAdapter {
         return reservationMapper.mapToDto(reservationService.cancelReservation(id));
     }
 
-    public Set<LocalDate> getAvailabilities(LocalDate startDate, LocalDate endDate) throws GenericException {
-        if (startDate == null) {
-            startDate = LocalDate.now();
+    public Set<LocalDate> getAvailabilities(LocalDate fromDate, LocalDate toDate) throws GenericException {
+        if (fromDate == null) {
+            fromDate = LocalDate.now();
         }
 
-        if (endDate == null) {
-            endDate = LocalDate.now().plus(30, ChronoUnit.DAYS);
+        if (toDate == null) {
+            toDate = LocalDate.now().plusMonths(1);
         }
 
-        return reservationService.getAvailabilities(startDate, endDate);
+        return reservationService.getAvailabilities(fromDate, toDate);
     }
 }

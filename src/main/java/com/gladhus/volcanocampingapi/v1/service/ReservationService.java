@@ -40,11 +40,11 @@ public class ReservationService {
 
         // Check if reservation is < 3 days
         if (ChronoUnit.DAYS.between(reservation.getCheckin(), reservation.getCheckout()) > 3) {
-            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The checkout date cannot be more than 3 days after the checkin date.");
+            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The length of the stay cannot be longer than 3 days.");
         }
 
         // Check if checkout is at least one day after checkin
-        if (ChronoUnit.DAYS.between(reservation.getCheckin(), reservation.getCheckout()) < 1) {
+        if (reservation.getCheckout().isEqual(reservation.getCheckin())) {
             throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The checkout date should be at least a day after the checkin date.");
         }
 
@@ -62,7 +62,7 @@ public class ReservationService {
         List<Reservation> reservationsWithinDateRange = reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(reservation.getCheckin(), reservation.getCheckout(), reservation.getCheckin(), reservation.getCheckout(), ReservationStatus.ACTIVE).orElse(new ArrayList<>());
 
         // Check that the dates selected are available
-        if (!getAvailableDates(reservation.getCheckin(), reservation.getCheckout(), reservationsWithinDateRange)
+        if (!getAvailableDatesFromReservations(reservation.getCheckin(), reservation.getCheckout(), reservationsWithinDateRange)
                 .containsAll(reservation.getCheckin().datesUntil(reservation.getCheckout()).toList())) {
             throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The dates selected are not available.");
         }
@@ -71,8 +71,6 @@ public class ReservationService {
         return reservationRepository.save(reservation);
 
     }
-
-
 
     public Reservation getReservation(String id) throws GenericException{
         return reservationRepository.findById(id).orElseThrow(ReservationNotFoundException::new);
@@ -88,17 +86,31 @@ public class ReservationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public Set<LocalDate> getAvailabilities(LocalDate startDate, LocalDate endDate) throws GenericException {
+    public Set<LocalDate> getAvailabilities(LocalDate fromDate, LocalDate toDate) throws GenericException {
 
-        // TODO : Check if endDate is max a month in the future
+        // Check that the toDate is after fromDate
+        if (!toDate.isAfter(fromDate)) {
+            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The toDate should be after the fromDate.");
+        }
 
-        List<Reservation> reservations = reservationRepository.findByCheckinIsBetweenOrCheckoutIsBetweenAndStatus(startDate, endDate, startDate, endDate, ReservationStatus.ACTIVE).orElse(new ArrayList<>());
-        return getAvailableDates(startDate, endDate, reservations);
+        // Check that the toDate is no more than one month in the future
+        if (!toDate.isBefore(LocalDate.now().plusMonths(1).plusDays(1))) {
+            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The toDate cannot be more than a month in the future.");
+        }
+
+        List<Reservation> reservations = reservationRepository.findByCheckinIsBetweenOrCheckoutIsBetweenAndStatus(fromDate, toDate, fromDate, toDate, ReservationStatus.ACTIVE)
+                .orElse(new ArrayList<>());
+
+        return getAvailableDatesFromReservations(fromDate, toDate, reservations);
     }
 
-    private Set<LocalDate> getAvailableDates(LocalDate startDate, LocalDate endDate, List<Reservation> reservations) {
+    private Set<LocalDate> getAvailableDatesFromReservations(LocalDate fromDate, LocalDate toDate, List<Reservation> reservations) {
         Set<LocalDate> alreadyReservedDates = reservations.stream().flatMap(reservation -> reservation.getCheckin().datesUntil(reservation.getCheckout())).collect(Collectors.toSet());
 
-        return startDate.datesUntil(endDate.plusDays(1)).filter(date -> !alreadyReservedDates.contains(date)).collect(Collectors.toCollection(TreeSet::new));
+        List<LocalDate> localDateStream = fromDate.datesUntil(toDate.plusDays(1)).toList();
+
+        return fromDate.datesUntil(toDate.plusDays(1))
+                .filter(date -> !alreadyReservedDates.contains(date))
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 }

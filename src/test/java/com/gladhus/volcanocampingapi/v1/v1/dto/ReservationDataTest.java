@@ -10,33 +10,62 @@ import java.time.LocalDate;
  */
 public class ReservationDataTest {
 
-    public static CreateReservationDto getCreateReservationDto() {
-        String fullName = "fullName-test";
-        String email = "test@example.com";
-        LocalDate checkinDate = LocalDate.now().plusDays(3);
-        LocalDate checkoutDate = LocalDate.now().plusDays(5);
+    public static ReservationDto getReservationDto() {
+        return ReservationDto.builder()
+                .id("id-test")
+                .fullName("fullName-test")
+                .email("test@example.com")
+                .checkin(LocalDate.now().plusDays(3))
+                .checkout(LocalDate.now().plusDays(5))
+                .status(ReservationStatus.ACTIVE)
+                .build();
+    }
 
+    public static CreateReservationDto getCreateReservationDto() {
         return CreateReservationDto.builder()
-                .fullName(fullName)
-                .email(email)
-                .checkin(checkinDate)
-                .checkout(checkoutDate)
+                .fullName("fullName-test")
+                .email("test@example.com")
+                .checkin(LocalDate.now().plusDays(3))
+                .checkout(LocalDate.now().plusDays(5))
+                .build();
+    }
+
+    public static Reservation getReservationPreCreate() {
+        return Reservation.builder()
+                .fullName("fullName-test")
+                .email("test@example.com")
+                .checkin(LocalDate.now().plusDays(3))
+                .checkout(LocalDate.now().plusDays(5))
+                .build();
+    }
+
+    public static Reservation getReservationPreCreate(LocalDate checkin, LocalDate checkout) {
+        return Reservation.builder()
+                .fullName("fullName-test")
+                .email("test@example.com")
+                .checkin(checkin)
+                .checkout(checkout)
                 .build();
     }
 
     public static Reservation getReservationEntity() {
-        String id = "id-test";
-        String fullName = "fullName-test";
-        String email = "test@example.com";
-        LocalDate checkinDate = LocalDate.now().plusDays(3);
-        LocalDate checkoutDate = LocalDate.now().plusDays(5);
-
         return Reservation.builder()
-                .id(id)
-                .fullName(fullName)
-                .email(email)
-                .checkin(checkinDate)
-                .checkout(checkoutDate)
+                .id("id-test")
+                .fullName("fullName-test")
+                .email("test@example.com")
+                .checkin(LocalDate.now().plusDays(3))
+                .checkout(LocalDate.now().plusDays(5))
+                .status(ReservationStatus.ACTIVE)
+                .build();
+    }
+
+    public static Reservation getReservationEntity(LocalDate checkin, LocalDate checkout) {
+        return Reservation.builder()
+                .id("id-test")
+                .fullName("fullName-test")
+                .email("test@example.com")
+                .checkin(checkin)
+                .checkout(checkout)
                 .status(ReservationStatus.ACTIVE)
                 .build();
     }
