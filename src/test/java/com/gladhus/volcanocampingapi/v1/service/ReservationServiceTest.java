@@ -222,4 +222,314 @@ public class ReservationServiceTest {
                 .hasMessage("The dates selected are not available.")
                 .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
     }
+
+    @Test
+    void updateReservation() throws GenericException {
+        Reservation newReservation = ReservationDataTest.getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(2));
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+        Reservation newReservationForSave = ReservationDataTest.getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(2));
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+                newReservation.getCheckin(), newReservation.getCheckout(),
+                newReservation.getCheckin(), newReservation.getCheckout(),
+                ReservationStatus.ACTIVE))
+                .thenReturn(Optional.of(List.of(oldReservation)));
+
+        when(reservationRepository.save(newReservationForSave)).thenReturn(newReservationForSave);
+
+        Reservation result = testee.updateReservation(newReservation);
+
+        assertThat(result).isEqualTo(newReservationForSave);
+    }
+
+    @Test
+    void updateReservation_sameDates() throws GenericException {
+        Reservation newReservation = ReservationDataTest.getReservationPreCreate();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+        Reservation newReservationForSave = ReservationDataTest.getReservationPreCreate();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+                newReservation.getCheckin(), newReservation.getCheckout(),
+                newReservation.getCheckin(), newReservation.getCheckout(),
+                ReservationStatus.ACTIVE))
+                .thenReturn(Optional.of(List.of(oldReservation)));
+
+        when(reservationRepository.save(newReservationForSave)).thenReturn(newReservationForSave);
+
+        Reservation result = testee.updateReservation(newReservation);
+
+        assertThat(result).isEqualTo(newReservationForSave);
+    }
+
+    @Test
+    void updateReservation_datesUnavailable() {
+        Reservation newReservation = ReservationDataTest.getReservationPreCreate();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+        Reservation newReservationForSave = ReservationDataTest.getReservationPreCreate();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        Reservation reservationConflict = ReservationDataTest.getReservationEntity();
+        reservationConflict.setId("id-test-2");
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+                newReservation.getCheckin(), newReservation.getCheckout(),
+                newReservation.getCheckin(), newReservation.getCheckout(),
+                ReservationStatus.ACTIVE))
+                .thenReturn(Optional.of(List.of(reservationConflict, oldReservation)));
+
+        assertThatThrownBy(() -> testee.updateReservation(newReservation))
+                .isInstanceOf(InvalidDatesException.class)
+                .hasMessage("The dates selected are not available.")
+                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void updateReservation_onlyFullName() throws GenericException {
+        Reservation newReservation = Reservation.builder().fullName("fullName-test").build();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+
+        Reservation newReservationForSave = Reservation.builder().fullName("fullName-test").build();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        newReservationForSave.setCheckout(oldReservation.getCheckout());
+        newReservationForSave.setCheckin(oldReservation.getCheckin());
+        newReservationForSave.setEmail(oldReservation.getEmail());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+                newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
+                newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
+                ReservationStatus.ACTIVE))
+                .thenReturn(Optional.of(List.of(oldReservation)));
+
+        when(reservationRepository.save(newReservationForSave)).thenReturn(newReservationForSave);
+
+        Reservation result = testee.updateReservation(newReservation);
+
+        assertThat(result).isEqualTo(newReservationForSave);
+    }
+
+    @Test
+    void updateReservation_onlyEmail() throws GenericException {
+        Reservation newReservation = Reservation.builder().email("email@example.com").build();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+
+        Reservation newReservationForSave = Reservation.builder().email("email@example.com").build();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        newReservationForSave.setCheckout(oldReservation.getCheckout());
+        newReservationForSave.setCheckin(oldReservation.getCheckin());
+        newReservationForSave.setFullName(oldReservation.getFullName());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+                newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
+                newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
+                ReservationStatus.ACTIVE))
+                .thenReturn(Optional.of(List.of(oldReservation)));
+
+        when(reservationRepository.save(newReservationForSave)).thenReturn(newReservationForSave);
+
+        Reservation result = testee.updateReservation(newReservation);
+
+        assertThat(result).isEqualTo(newReservationForSave);
+    }
+
+    @Test
+    void updateReservation_onlyCheckin() throws GenericException {
+        Reservation newReservation = Reservation.builder().checkin(LocalDate.now().plusDays(4)).build();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+
+        Reservation newReservationForSave = Reservation.builder().checkin(LocalDate.now().plusDays(4)).build();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        newReservationForSave.setCheckout(oldReservation.getCheckout());
+        newReservationForSave.setEmail(oldReservation.getEmail());
+        newReservationForSave.setFullName(oldReservation.getFullName());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+                newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
+                newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
+                ReservationStatus.ACTIVE))
+                .thenReturn(Optional.of(List.of(oldReservation)));
+
+        when(reservationRepository.save(newReservationForSave)).thenReturn(newReservationForSave);
+
+        Reservation result = testee.updateReservation(newReservation);
+
+        assertThat(result).isEqualTo(newReservationForSave);
+    }
+
+    @Test
+    void updateReservation_onlyCheckin_StayLongerThan3Days() throws GenericException {
+        Reservation newReservation = Reservation.builder().checkin(LocalDate.now().plusDays(1)).build();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+
+        Reservation newReservationForSave = Reservation.builder().checkin(LocalDate.now().plusDays(1)).build();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        newReservationForSave.setCheckout(oldReservation.getCheckout());
+        newReservationForSave.setEmail(oldReservation.getEmail());
+        newReservationForSave.setFullName(oldReservation.getFullName());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+
+        assertThatThrownBy(() -> testee.updateReservation(newReservation))
+                .isInstanceOf(InvalidDatesException.class)
+                .hasMessage("The length of the stay cannot be longer than 3 days.")
+                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void updateReservation_onlyCheckin_CheckinAfterCheckout() throws GenericException {
+        Reservation newReservation = Reservation.builder().checkin(LocalDate.now().plusDays(6)).build();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+
+        Reservation newReservationForSave = Reservation.builder().checkin(LocalDate.now().plusDays(6)).build();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        newReservationForSave.setCheckout(oldReservation.getCheckout());
+        newReservationForSave.setEmail(oldReservation.getEmail());
+        newReservationForSave.setFullName(oldReservation.getFullName());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+
+        assertThatThrownBy(() -> testee.updateReservation(newReservation))
+                .isInstanceOf(InvalidDatesException.class)
+                .hasMessage("The checkout date should be after the checkin date.")
+                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void updateReservation_onlyCheckout() throws GenericException {
+        Reservation newReservation = Reservation.builder().checkout(LocalDate.now().plusDays(4)).build();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+
+        Reservation newReservationForSave = Reservation.builder().checkout(LocalDate.now().plusDays(4)).build();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        newReservationForSave.setCheckin(oldReservation.getCheckin());
+        newReservationForSave.setEmail(oldReservation.getEmail());
+        newReservationForSave.setFullName(oldReservation.getFullName());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+                newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
+                newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
+                ReservationStatus.ACTIVE))
+                .thenReturn(Optional.of(List.of(oldReservation)));
+
+        when(reservationRepository.save(newReservationForSave)).thenReturn(newReservationForSave);
+
+        Reservation result = testee.updateReservation(newReservation);
+
+        assertThat(result).isEqualTo(newReservationForSave);
+    }
+
+    @Test
+    void updateReservation_onlyCheckout_StayLongerThan3Days() throws GenericException {
+        Reservation newReservation = Reservation.builder().checkout(LocalDate.now().plusDays(8)).build();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+
+        Reservation newReservationForSave = Reservation.builder().checkout(LocalDate.now().plusDays(8)).build();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        newReservationForSave.setCheckin(oldReservation.getCheckin());
+        newReservationForSave.setEmail(oldReservation.getEmail());
+        newReservationForSave.setFullName(oldReservation.getFullName());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+
+        assertThatThrownBy(() -> testee.updateReservation(newReservation))
+                .isInstanceOf(InvalidDatesException.class)
+                .hasMessage("The length of the stay cannot be longer than 3 days.")
+                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void updateReservation_onlyCheckout_CheckinAfterCheckout() throws GenericException {
+        Reservation newReservation = Reservation.builder().checkout(LocalDate.now()).build();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+
+        Reservation newReservationForSave = Reservation.builder().checkout(LocalDate.now()).build();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        newReservationForSave.setCheckin(oldReservation.getCheckin());
+        newReservationForSave.setEmail(oldReservation.getEmail());
+        newReservationForSave.setFullName(oldReservation.getFullName());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+
+        assertThatThrownBy(() -> testee.updateReservation(newReservation))
+                .isInstanceOf(InvalidDatesException.class)
+                .hasMessage("The checkout date should be after the checkin date.")
+                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void updateReservation_CheckinAndCheckout_CheckinToday() {
+        Reservation newReservation = Reservation.builder().checkin(LocalDate.now()).checkout(LocalDate.now().plusDays(2)).build();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+
+        Reservation newReservationForSave = Reservation.builder().checkin(LocalDate.now()).checkout(LocalDate.now().plusDays(2)).build();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        newReservationForSave.setEmail(oldReservation.getEmail());
+        newReservationForSave.setFullName(oldReservation.getFullName());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+
+        assertThatThrownBy(() -> testee.updateReservation(newReservation))
+                .isInstanceOf(InvalidDatesException.class)
+                .hasMessage("The checkin date needs to be at least one day in the future.")
+                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void updateReservation_CheckinAndCheckout_CheckoutMoreThanAMonthInFuture() {
+        Reservation newReservation = Reservation.builder()
+                .checkin(LocalDate.now().plusMonths(1))
+                .checkout(LocalDate.now().plusMonths(1).plusDays(1))
+                .build();
+        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        newReservation.setId(oldReservation.getId());
+
+        Reservation newReservationForSave = Reservation.builder()
+                .checkin(LocalDate.now().plusMonths(1))
+                .checkout(LocalDate.now().plusMonths(1).plusDays(1))
+                .build();
+        newReservationForSave.setId(oldReservation.getId());
+        newReservationForSave.setStatus(oldReservation.getStatus());
+        newReservationForSave.setEmail(oldReservation.getEmail());
+        newReservationForSave.setFullName(oldReservation.getFullName());
+
+        when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
+
+        assertThatThrownBy(() -> testee.updateReservation(newReservation))
+                .isInstanceOf(InvalidDatesException.class)
+                .hasMessage("The checkout date cannot be more than a month in the future.")
+                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+    }
+
+
 }

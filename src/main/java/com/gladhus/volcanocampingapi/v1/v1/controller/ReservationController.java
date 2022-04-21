@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,10 +31,9 @@ public class ReservationController {
         this.reservationAdapter = reservationAdapter;
     }
 
-    @GetMapping("/availabilities")
-    public ResponseEntity<Set<LocalDate>> getAvailabilities(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) throws GenericException {
-        return new ResponseEntity<>(reservationAdapter.getAvailabilities(startDate, endDate), HttpStatus.OK);
+    @GetMapping("/{id}")
+    public ResponseEntity<ReservationDto> getReservationById(@PathVariable String id) throws GenericException {
+        return new ResponseEntity<>(reservationAdapter.getReservation(id), HttpStatus.OK);
     }
 
     @PostMapping("")
@@ -41,14 +41,20 @@ public class ReservationController {
         return new ResponseEntity<>(reservationAdapter.createReservation(createReservationDto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ReservationDto> getReservationById(@PathVariable String id) throws GenericException {
-        return new ResponseEntity<>(reservationAdapter.getReservation(id), HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<ReservationDto> updateReservation(@PathVariable String id, @RequestBody CreateReservationDto createReservationDto) throws GenericException {
+        return new ResponseEntity<>(reservationAdapter.updateReservation(id, createReservationDto), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ReservationDto> cancelReservation(@PathVariable String id) throws GenericException {
         return new ResponseEntity<>(reservationAdapter.cancelReservation(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/availabilities")
+    public ResponseEntity<Set<LocalDate>> getAvailabilities(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) throws GenericException {
+        return new ResponseEntity<>(reservationAdapter.getAvailabilities(startDate, endDate), HttpStatus.OK);
     }
 
 }

@@ -27,4 +27,14 @@ public class ReservationMapper {
                 .checkout(reservation.getCheckout())
                 .build();
     }
+
+    public Reservation mapToEntity(String id, CreateReservationDto createReservationDto) {
+        return Reservation.builder()
+                .id(id)
+                .fullName(createReservationDto.getFullName())
+                .email(createReservationDto.getEmail())
+                .checkin(createReservationDto.getCheckin())
+                .checkout(createReservationDto.getCheckout())
+                .build();
+    }
 }

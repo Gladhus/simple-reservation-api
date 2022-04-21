@@ -37,6 +37,20 @@ class ReservationMapperTest {
     }
 
     @Test
+    void mapToEntity_withId() {
+        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+
+        Reservation result = testee.mapToEntity("id-test", createReservationDto);
+
+        assertThat(result.getFullName()).isEqualTo(createReservationDto.getFullName());
+        assertThat(result.getEmail()).isEqualTo(createReservationDto.getEmail());
+        assertThat(result.getCheckin()).isEqualTo(createReservationDto.getCheckin());
+        assertThat(result.getCheckout()).isEqualTo(createReservationDto.getCheckout());
+        assertThat(result.getId()).isEqualTo("id-test");
+        assertNull(result.getStatus());
+    }
+
+    @Test
     void mapToDto() {
         Reservation reservationEntity = ReservationDataTest.getReservationEntity();
 

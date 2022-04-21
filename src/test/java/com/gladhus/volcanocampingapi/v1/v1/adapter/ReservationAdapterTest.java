@@ -115,6 +115,39 @@ class ReservationAdapterTest {
     }
 
     @Test
+    void updateReservation() throws GenericException {
+        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        Reservation reservationEntity = ReservationDataTest.getReservationEntity();
+        ReservationDto reservationDto = ReservationDataTest.getReservationDto();
+
+        when(reservationMapper.mapToEntity(reservationEntity.getId(), createReservationDto)).thenReturn(reservationEntity);
+        when(reservationService.updateReservation(reservationEntity)).thenReturn(reservationEntity);
+        when(reservationMapper.mapToDto(reservationEntity)).thenReturn(reservationDto);
+
+        ReservationDto result = testee.updateReservation(reservationEntity.getId(), createReservationDto);
+
+        assertThat(result).isEqualTo(reservationDto);
+    }
+
+    @Test
+    void updateReservation_emptyId() {
+        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+
+        assertThatThrownBy(() -> testee.updateReservation("", createReservationDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Reservation id is required.");
+    }
+
+    @Test
+    void updateReservation_nullId() {
+        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+
+        assertThatThrownBy(() -> testee.updateReservation(null, createReservationDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Reservation id is required.");
+    }
+
+    @Test
     void getReservation() throws GenericException {
         Reservation reservationEntity = ReservationDataTest.getReservationEntity();
         ReservationDto reservationDto = ReservationDataTest.getReservationDto();
