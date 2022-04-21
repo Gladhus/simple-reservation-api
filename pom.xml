@@ -16,16 +16,22 @@
     <properties>
         <java.version>18</java.version>
         <mockito.version>4.5.0</mockito.version>
+        <springfox-swagger.version>3.0.0</springfox-swagger.version>
+        <byte-buddy.version>1.12.9</byte-buddy.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>${springfox-swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -42,6 +48,11 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>${byte-buddy.version}</version>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
@@ -54,11 +65,6 @@
             <artifactId>mockito-inline</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.12.9</version>
         </dependency>
     </dependencies>
 
