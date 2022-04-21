@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +30,7 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Reservation createReservation(Reservation reservation) throws GenericException {
 
         // Check if checkin date is before checkout date
@@ -72,6 +72,7 @@ public class ReservationService {
 
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public Reservation getReservation(String id) throws GenericException{
         return reservationRepository.findById(id).orElseThrow(ReservationNotFoundException::new);
     }
@@ -85,7 +86,7 @@ public class ReservationService {
         return reservation;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Set<LocalDate> getAvailabilities(LocalDate fromDate, LocalDate toDate) throws GenericException {
 
         // Check that the toDate is after fromDate
