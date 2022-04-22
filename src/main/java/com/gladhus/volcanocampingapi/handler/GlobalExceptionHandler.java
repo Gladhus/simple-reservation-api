@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
         return ErrorMessage.builder().status(e.getStatus()).message(e.getMessage()).build();
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(value = {InvalidDatesException.class})
     public ErrorMessage badRequestErrorHandler(GenericException e) {
         return ErrorMessage.builder().status(e.getStatus()).message(e.getMessage()).build();

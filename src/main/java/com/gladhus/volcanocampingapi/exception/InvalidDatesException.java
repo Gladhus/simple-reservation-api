@@ -6,11 +6,11 @@ public class InvalidDatesException extends GenericException {
 
     private static final String ERROR_MESSAGE = "One of both of the dates entered are invalid.";
 
-    public InvalidDatesException(HttpStatus status) {
-        super(status, ERROR_MESSAGE);
+    public InvalidDatesException() {
+        super(HttpStatus.FORBIDDEN, ERROR_MESSAGE);
     }
 
-    public InvalidDatesException(HttpStatus status, String message) {
-        super(status, message);
+    public InvalidDatesException(String message) {
+        super(HttpStatus.FORBIDDEN, message);
     }
 }

@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,7 @@ public class ReservationService {
     @Transactional(propagation = Propagation.REQUIRED)
     public Reservation createReservation(Reservation reservation) throws GenericException {
 
-        validateDates(reservation);
+        validateDatesForCreation(reservation);
 
         reservation.setStatus(ReservationStatus.ACTIVE);
         return reservationRepository.save(reservation);
@@ -60,7 +59,7 @@ public class ReservationService {
             newReservation.setEmail(oldReservation.getEmail());
         }
 
-        validateDates(newReservation, true);
+        validateDatesForCreation(newReservation, true);
 
         newReservation.setStatus(ReservationStatus.ACTIVE);
         return reservationRepository.save(newReservation);
@@ -85,12 +84,12 @@ public class ReservationService {
 
         // Check that the toDate is after fromDate
         if (!toDate.isAfter(fromDate)) {
-            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The toDate should be after the fromDate.");
+            throw new InvalidDatesException("The toDate should be after the fromDate.");
         }
 
         // Check that the toDate is no more than one month in the future
         if (!toDate.isBefore(LocalDate.now().plusMonths(1).plusDays(1))) {
-            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The toDate cannot be more than a month in the future.");
+            throw new InvalidDatesException("The toDate cannot be more than a month in the future.");
         }
 
         List<Reservation> reservations = reservationRepository.findByCheckinIsBetweenOrCheckoutIsBetweenAndStatus(fromDate, toDate, fromDate, toDate, ReservationStatus.ACTIVE)
@@ -109,34 +108,34 @@ public class ReservationService {
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    private void validateDates(Reservation reservation) throws InvalidDatesException {
-        validateDates(reservation, false);
+    private void validateDatesForCreation(Reservation reservation) throws InvalidDatesException {
+        validateDatesForCreation(reservation, false);
     }
 
-    private void validateDates(Reservation reservation, boolean excludeCurrentReservation) throws InvalidDatesException {
+    private void validateDatesForCreation(Reservation reservation, boolean excludeCurrentReservation) throws InvalidDatesException {
         // Check if checkin date is before checkout date
         if (reservation.getCheckin().isAfter(reservation.getCheckout())) {
-            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The checkout date should be after the checkin date.");
+            throw new InvalidDatesException("The checkout date should be after the checkin date.");
         }
 
         // Check if reservation is < 3 days
         if (ChronoUnit.DAYS.between(reservation.getCheckin(), reservation.getCheckout()) > 3) {
-            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The length of the stay cannot be longer than 3 days.");
+            throw new InvalidDatesException("The length of the stay cannot be longer than 3 days.");
         }
 
         // Check if checkout is at least one day after checkin
         if (reservation.getCheckout().isEqual(reservation.getCheckin())) {
-            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The checkout date should be at least a day after the checkin date.");
+            throw new InvalidDatesException("The checkout date should be at least a day after the checkin date.");
         }
 
         // Check if the checkin is at least one day in the future
         if (!reservation.getCheckin().isAfter(LocalDate.now())) {
-            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The checkin date needs to be at least one day in the future.");
+            throw new InvalidDatesException("The checkin date needs to be at least one day in the future.");
         }
 
         // Check that the checkout date is no more than one month in the future
         if (!reservation.getCheckout().isBefore(LocalDate.now().plusMonths(1))) {
-            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The checkout date cannot be more than a month in the future.");
+            throw new InvalidDatesException("The checkout date cannot be more than a month in the future.");
         }
 
         List<Reservation> reservationsWithinDateRange =
@@ -151,7 +150,7 @@ public class ReservationService {
         // Check that the dates selected are available
         if (!getAvailableDatesFromReservations(reservation.getCheckin(), reservation.getCheckout(), reservationsWithinDateRange)
                 .containsAll(reservation.getCheckin().datesUntil(reservation.getCheckout()).toList())) {
-            throw new InvalidDatesException(HttpStatus.BAD_REQUEST, "The dates selected are not available.");
+            throw new InvalidDatesException("The dates selected are not available.");
         }
 
     }

@@ -116,7 +116,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.getAvailabilities(fromDate, toDate))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The toDate cannot be more than a month in the future.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -127,7 +127,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.getAvailabilities(fromDate, toDate))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The toDate should be after the fromDate.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -158,7 +158,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.createReservation(reservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The checkout date should be after the checkin date.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.createReservation(reservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The length of the stay cannot be longer than 3 days.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -180,7 +180,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.createReservation(reservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The checkout date should be at least a day after the checkin date.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -191,7 +191,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.createReservation(reservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The checkin date needs to be at least one day in the future.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -202,7 +202,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.createReservation(reservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The checkout date cannot be more than a month in the future.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -220,7 +220,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.createReservation(reservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The dates selected are not available.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -290,7 +290,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.updateReservation(newReservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The dates selected are not available.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -392,7 +392,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.updateReservation(newReservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The length of the stay cannot be longer than 3 days.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -413,7 +413,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.updateReservation(newReservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The checkout date should be after the checkin date.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -461,7 +461,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.updateReservation(newReservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The length of the stay cannot be longer than 3 days.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -482,7 +482,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.updateReservation(newReservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The checkout date should be after the checkin date.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -502,7 +502,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.updateReservation(newReservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The checkin date needs to be at least one day in the future.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -528,7 +528,7 @@ public class ReservationServiceTest {
         assertThatThrownBy(() -> testee.updateReservation(newReservation))
                 .isInstanceOf(InvalidDatesException.class)
                 .hasMessage("The checkout date cannot be more than a month in the future.")
-                .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                .hasFieldOrPropertyWithValue("status", HttpStatus.FORBIDDEN);
     }
 
 

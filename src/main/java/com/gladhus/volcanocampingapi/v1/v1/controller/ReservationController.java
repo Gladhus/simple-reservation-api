@@ -51,7 +51,7 @@ public class ReservationController {
         return new ResponseEntity<>(reservationAdapter.getReservation(id), HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Created"),
             @ApiResponse(code = 400, message = "Error(s) related to validating the information provided.")
