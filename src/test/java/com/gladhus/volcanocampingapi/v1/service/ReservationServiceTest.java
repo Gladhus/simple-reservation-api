@@ -2,7 +2,7 @@ package com.gladhus.volcanocampingapi.v1.service;
 
 import com.gladhus.volcanocampingapi.domain.Reservation;
 import com.gladhus.volcanocampingapi.domain.ReservationStatus;
-import com.gladhus.volcanocampingapi.exception.GenericException;
+import com.gladhus.volcanocampingapi.exception.GenericAPIException;
 import com.gladhus.volcanocampingapi.exception.InvalidDatesException;
 import com.gladhus.volcanocampingapi.exception.ReservationNotFoundException;
 import com.gladhus.volcanocampingapi.repository.ReservationRepository;
@@ -37,7 +37,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void getReservation() throws GenericException {
+    void getReservation() throws GenericAPIException {
         Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
 
         when(reservationRepository.findById(reservationEntity.getId())).thenReturn(Optional.of(reservationEntity));
@@ -60,7 +60,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void cancelReservation() throws GenericException {
+    void cancelReservation() throws GenericAPIException {
         Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
 
         when(reservationRepository.findByIdAndStatus(reservationEntity.getId(), ReservationStatus.ACTIVE))
@@ -90,7 +90,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void getAvailabilities() throws GenericException {
+    void getAvailabilities() throws GenericAPIException {
         LocalDate fromDate = LocalDate.now();
         LocalDate toDate = LocalDate.now().plusDays(10);
 
@@ -109,7 +109,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void getAvailabilities_OverAMonthInTheFuture() throws GenericException {
+    void getAvailabilities_OverAMonthInTheFuture() throws GenericAPIException {
         LocalDate fromDate = LocalDate.now();
         LocalDate toDate = LocalDate.now().plusDays(32);
 
@@ -120,7 +120,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void getAvailabilities_ToDateBeforeFromDate() throws GenericException {
+    void getAvailabilities_ToDateBeforeFromDate() throws GenericAPIException {
         LocalDate fromDate = LocalDate.now().plusDays(2);
         LocalDate toDate = LocalDate.now();
 
@@ -131,7 +131,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void createReservation() throws GenericException {
+    void createReservation() throws GenericAPIException {
         Reservation reservationInput = ReservationDataTestUtil.getReservationPreCreate();
         Reservation reservationOutput = ReservationDataTestUtil.getReservationEntity();
         Reservation reservationForInsert = ReservationDataTestUtil.getReservationPreCreate();
@@ -224,7 +224,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateReservation() throws GenericException {
+    void updateReservation() throws GenericAPIException {
         Reservation newReservation = ReservationDataTestUtil.getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(2));
         Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
@@ -247,7 +247,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateReservation_sameDates() throws GenericException {
+    void updateReservation_sameDates() throws GenericAPIException {
         Reservation newReservation = ReservationDataTestUtil.getReservationPreCreate();
         Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
@@ -294,7 +294,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateReservation_onlyFullName() throws GenericException {
+    void updateReservation_onlyFullName() throws GenericAPIException {
         Reservation newReservation = Reservation.builder().fullName("fullName-test").build();
         Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
@@ -321,7 +321,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateReservation_onlyEmail() throws GenericException {
+    void updateReservation_onlyEmail() throws GenericAPIException {
         Reservation newReservation = Reservation.builder().email("email@example.com").build();
         Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
@@ -348,7 +348,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateReservation_onlyCheckin() throws GenericException {
+    void updateReservation_onlyCheckin() throws GenericAPIException {
         Reservation newReservation = Reservation.builder().checkin(LocalDate.now().plusDays(4)).build();
         Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
@@ -375,7 +375,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateReservation_onlyCheckin_StayLongerThan3Days() throws GenericException {
+    void updateReservation_onlyCheckin_StayLongerThan3Days() throws GenericAPIException {
         Reservation newReservation = Reservation.builder().checkin(LocalDate.now().plusDays(1)).build();
         Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
@@ -396,7 +396,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateReservation_onlyCheckin_CheckinAfterCheckout() throws GenericException {
+    void updateReservation_onlyCheckin_CheckinAfterCheckout() throws GenericAPIException {
         Reservation newReservation = Reservation.builder().checkin(LocalDate.now().plusDays(6)).build();
         Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
@@ -417,7 +417,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateReservation_onlyCheckout() throws GenericException {
+    void updateReservation_onlyCheckout() throws GenericAPIException {
         Reservation newReservation = Reservation.builder().checkout(LocalDate.now().plusDays(4)).build();
         Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
@@ -444,7 +444,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateReservation_onlyCheckout_StayLongerThan3Days() throws GenericException {
+    void updateReservation_onlyCheckout_StayLongerThan3Days() throws GenericAPIException {
         Reservation newReservation = Reservation.builder().checkout(LocalDate.now().plusDays(8)).build();
         Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
@@ -465,7 +465,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateReservation_onlyCheckout_CheckinAfterCheckout() throws GenericException {
+    void updateReservation_onlyCheckout_CheckinAfterCheckout() throws GenericAPIException {
         Reservation newReservation = Reservation.builder().checkout(LocalDate.now()).build();
         Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());

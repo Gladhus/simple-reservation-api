@@ -13,8 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(propagation = Propagation.MANDATORY)
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
+
+    @Transactional(propagation = Propagation.MANDATORY)
     Optional<Reservation> findByIdAndStatus(String id, ReservationStatus status);
 
+    /**
+     * This repository query uses a PESSIMISTIC_WRITE lock on the table to ensure repeatable reads
+     * and avoid conflicts with concurrent requests.
+     */
     @Transactional(propagation = Propagation.MANDATORY)
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<List<Reservation>> findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(LocalDate checkoutStartDate, LocalDate checkoutEndDate,

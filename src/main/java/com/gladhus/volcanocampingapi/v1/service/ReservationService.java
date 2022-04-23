@@ -2,7 +2,7 @@ package com.gladhus.volcanocampingapi.v1.service;
 
 import com.gladhus.volcanocampingapi.domain.Reservation;
 import com.gladhus.volcanocampingapi.domain.ReservationStatus;
-import com.gladhus.volcanocampingapi.exception.GenericException;
+import com.gladhus.volcanocampingapi.exception.GenericAPIException;
 import com.gladhus.volcanocampingapi.exception.InvalidDatesException;
 import com.gladhus.volcanocampingapi.exception.ReservationNotFoundException;
 import com.gladhus.volcanocampingapi.repository.ReservationRepository;
@@ -41,7 +41,7 @@ public class ReservationService {
     @Transactional(propagation = Propagation.REQUIRED)
     public Reservation createReservation(Reservation reservation) throws InvalidDatesException {
 
-        validateDatesForCreation(reservation);
+        validateDatesForCreationOrUpdate(reservation);
 
         reservation.setStatus(ReservationStatus.ACTIVE);
         return reservationRepository.save(reservation);
@@ -54,7 +54,7 @@ public class ReservationService {
      * @throws InvalidDatesException if any validation fails on the reservation.
      * @throws ReservationNotFoundException if no reservation was found for the id provided.
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {GenericException.class})
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {GenericAPIException.class})
     public Reservation updateReservation(Reservation newReservation) throws InvalidDatesException, ReservationNotFoundException {
 
         Reservation oldReservation = reservationRepository.findById(newReservation.getId()).orElseThrow(ReservationNotFoundException::new);
@@ -75,7 +75,7 @@ public class ReservationService {
             newReservation.setEmail(oldReservation.getEmail());
         }
 
-        validateDatesForCreation(newReservation);
+        validateDatesForCreationOrUpdate(newReservation);
 
         newReservation.setStatus(ReservationStatus.ACTIVE);
         return reservationRepository.save(newReservation);
@@ -136,6 +136,9 @@ public class ReservationService {
         return getAvailableDatesFromReservations(fromDate, toDate, reservations);
     }
 
+    /**
+     * Creates a list of all dates between the fromDate and toDate and then filters out the unavailable dates.
+     */
     private Set<LocalDate> getAvailableDatesFromReservations(LocalDate fromDate, LocalDate toDate, List<Reservation> reservations) {
         Set<LocalDate> alreadyReservedDates = reservations.stream().flatMap(reservation -> reservation.getCheckin().datesUntil(reservation.getCheckout())).collect(Collectors.toSet());
 
@@ -144,32 +147,37 @@ public class ReservationService {
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
-    private void validateDatesForCreation(Reservation reservation) throws InvalidDatesException {
-        // Check if checkin date is before checkout date
+    /**
+     * Checks the selected dates for a reservation and validates that they are valid and available.
+     */
+    private void validateDatesForCreationOrUpdate(Reservation reservation) throws InvalidDatesException {
+        // Abort if checkin date is after checkout date
         if (reservation.getCheckin().isAfter(reservation.getCheckout())) {
             throw new InvalidDatesException("The checkout date should be after the checkin date.");
         }
 
-        // Check if reservation is < 3 days
+        // Abort if reservation is > 3 days
         if (ChronoUnit.DAYS.between(reservation.getCheckin(), reservation.getCheckout()) > 3) {
             throw new InvalidDatesException("The length of the stay cannot be longer than 3 days.");
         }
 
-        // Check if checkout is at least one day after checkin
+        // Abort if checkout is not at least one day after checkin
         if (reservation.getCheckout().isEqual(reservation.getCheckin())) {
             throw new InvalidDatesException("The checkout date should be at least a day after the checkin date.");
         }
 
-        // Check if the checkin is at least one day in the future
+        // Abort if the checkin same day as the reservation is made on
         if (!reservation.getCheckin().isAfter(LocalDate.now())) {
             throw new InvalidDatesException("The checkin date needs to be at least one day in the future.");
         }
 
-        // Check that the checkout date is no more than one month in the future
+        // Abort if checkout is more than a month in the future
+        // We do not validate checkin date as it cannot be after checkout.
         if (!reservation.getCheckout().isBefore(LocalDate.now().plusMonths(1))) {
             throw new InvalidDatesException("The checkout date cannot be more than a month in the future.");
         }
 
+        // Get all active reservation within date range
         List<Reservation> reservationsWithinDateRange =
                 reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
                                 reservation.getCheckin(), reservation.getCheckout(),
@@ -179,11 +187,10 @@ public class ReservationService {
                         .filter(res -> !res.getId().equals(reservation.getId()))
                         .toList();
 
-        // Check that the dates selected are available
+        // Abort that the dates selected are available
         if (!getAvailableDatesFromReservations(reservation.getCheckin(), reservation.getCheckout(), reservationsWithinDateRange)
                 .containsAll(reservation.getCheckin().datesUntil(reservation.getCheckout()).toList())) {
             throw new InvalidDatesException("The dates selected are not available.");
         }
-
     }
 }

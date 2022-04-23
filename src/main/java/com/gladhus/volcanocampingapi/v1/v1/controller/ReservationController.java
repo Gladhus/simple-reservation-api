@@ -1,6 +1,6 @@
 package com.gladhus.volcanocampingapi.v1.v1.controller;
 
-import com.gladhus.volcanocampingapi.exception.GenericException;
+import com.gladhus.volcanocampingapi.exception.GenericAPIException;
 import com.gladhus.volcanocampingapi.v1.v1.adapter.ReservationAdapter;
 import com.gladhus.volcanocampingapi.v1.v1.dto.CreateReservationDto;
 import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDto;
@@ -47,7 +47,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "404", description = "Reservation could not be found.", content = @Content)
     })
     @Operation(summary = "Returns the details of a reservation for the id.")
-    public ResponseEntity<ReservationDto> getReservationById(@PathVariable String id) throws GenericException {
+    public ResponseEntity<ReservationDto> getReservationById(@PathVariable String id) throws GenericAPIException {
         return new ResponseEntity<>(reservationAdapter.getReservation(id), HttpStatus.OK);
     }
 
@@ -58,7 +58,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "403", description = "Reservation could not be done for provided dates.", content = @Content)
     })
     @Operation(summary = "Creates a new reservation with the information provided.")
-    public ResponseEntity<ReservationDto> createReservation(@RequestBody CreateReservationDto createReservationDto) throws GenericException {
+    public ResponseEntity<ReservationDto> createReservation(@RequestBody CreateReservationDto createReservationDto) throws GenericAPIException {
         return new ResponseEntity<>(reservationAdapter.createReservation(createReservationDto), HttpStatus.CREATED);
     }
 
@@ -70,7 +70,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "404", description = "Reservation could not be found.", content = @Content)
     })
     @Operation(summary = "Updates an existing reservation with the information provided.")
-    public ResponseEntity<ReservationDto> updateReservation(@PathVariable String id, @RequestBody CreateReservationDto createReservationDto) throws GenericException {
+    public ResponseEntity<ReservationDto> updateReservation(@PathVariable String id, @RequestBody CreateReservationDto createReservationDto) throws GenericAPIException {
         return new ResponseEntity<>(reservationAdapter.updateReservation(id, createReservationDto), HttpStatus.OK);
     }
 
@@ -81,7 +81,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "404", description = "Reservation could not be found.", content = @Content)
     })
     @Operation(summary = "Cancels an existing reservation with the id provided.")
-    public ResponseEntity<ReservationDto> cancelReservation(@PathVariable String id) throws GenericException {
+    public ResponseEntity<ReservationDto> cancelReservation(@PathVariable String id) throws GenericAPIException {
         return new ResponseEntity<>(reservationAdapter.cancelReservation(id), HttpStatus.OK);
     }
 
@@ -92,7 +92,7 @@ public class ReservationController {
     })
     @Operation(summary = "Provides a list dates that are available for reserving.")
     public ResponseEntity<List<LocalDate>> getAvailabilities(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
-                                                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate) throws GenericException {
+                                                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate) throws GenericAPIException {
         return new ResponseEntity<>(new ArrayList<>(reservationAdapter.getAvailabilities(fromDate, toDate)), HttpStatus.OK);
     }
 

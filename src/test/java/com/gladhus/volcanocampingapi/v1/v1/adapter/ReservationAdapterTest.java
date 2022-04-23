@@ -1,7 +1,7 @@
 package com.gladhus.volcanocampingapi.v1.v1.adapter;
 
 import com.gladhus.volcanocampingapi.domain.Reservation;
-import com.gladhus.volcanocampingapi.exception.GenericException;
+import com.gladhus.volcanocampingapi.exception.GenericAPIException;
 import com.gladhus.volcanocampingapi.v1.service.ReservationService;
 import com.gladhus.volcanocampingapi.v1.v1.dto.CreateReservationDto;
 import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTestUtil;
@@ -38,7 +38,7 @@ class ReservationAdapterTest {
     }
 
     @Test
-    void createReservation() throws GenericException {
+    void createReservation() throws GenericAPIException {
         CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
         Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
         ReservationDto reservationDto = ReservationDataTestUtil.getReservationDto();
@@ -113,7 +113,7 @@ class ReservationAdapterTest {
     }
 
     @Test
-    void updateReservation() throws GenericException {
+    void updateReservation() throws GenericAPIException {
         CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
         Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
         ReservationDto reservationDto = ReservationDataTestUtil.getReservationDto();
@@ -146,7 +146,7 @@ class ReservationAdapterTest {
     }
 
     @Test
-    void getReservation() throws GenericException {
+    void getReservation() throws GenericAPIException {
         Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
         ReservationDto reservationDto = ReservationDataTestUtil.getReservationDto();
 
@@ -173,7 +173,7 @@ class ReservationAdapterTest {
     }
 
     @Test
-    void cancelReservation() throws GenericException {
+    void cancelReservation() throws GenericAPIException {
         Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
         ReservationDto reservationDto = ReservationDataTestUtil.getReservationDto();
 
@@ -200,7 +200,7 @@ class ReservationAdapterTest {
     }
 
     @Test
-    void getAvailabilities() throws GenericException {
+    void getAvailabilities() throws GenericAPIException {
         LocalDate fromDate = LocalDate.now().plusDays(1);
         LocalDate toDate = LocalDate.now().plusDays(10);
 
@@ -214,7 +214,7 @@ class ReservationAdapterTest {
     }
 
     @Test
-    void getAvailabilities_nullFromDate() throws GenericException {
+    void getAvailabilities_nullFromDate() throws GenericAPIException {
         LocalDate fromDate = null;
         LocalDate toDate = LocalDate.now().plusDays(10);
 
@@ -228,7 +228,7 @@ class ReservationAdapterTest {
     }
 
     @Test
-    void getAvailabilities_nullToDate() throws GenericException {
+    void getAvailabilities_nullToDate() throws GenericAPIException {
         LocalDate fromDate = LocalDate.now();
         LocalDate toDate = null;
 
@@ -242,7 +242,7 @@ class ReservationAdapterTest {
     }
 
     @Test
-    void getAvailabilities_nullToDate_nullFromDate() throws GenericException {
+    void getAvailabilities_nullToDate_nullFromDate() throws GenericAPIException {
         LocalDate fromDate = null;
         LocalDate toDate = null;
 

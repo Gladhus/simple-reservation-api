@@ -2,7 +2,7 @@ package com.gladhus.volcanocampingapi.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class ReservationNotFoundException extends GenericException {
+public class ReservationNotFoundException extends GenericAPIException {
 
     private static final String ERROR_MESSAGE = "No reservation was found for provided reservation id.";
     public ReservationNotFoundException() {
