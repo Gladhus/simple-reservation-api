@@ -11,32 +11,35 @@ import java.time.LocalDate;
 public class ReservationDataTestUtil {
 
     public static ReservationDto getReservationDto() {
+        return getReservationDto(LocalDate.now().plusDays(3), LocalDate.now().plusDays(5));
+    }
+
+    public static ReservationDto getReservationDto(LocalDate checkin, LocalDate checkout) {
         return ReservationDto.builder()
                 .id("id-test")
                 .fullName("fullName-test")
                 .email("test@example.com")
-                .checkin(LocalDate.now().plusDays(3))
-                .checkout(LocalDate.now().plusDays(5))
+                .checkin(checkin)
+                .checkout(checkout)
                 .status(ReservationStatus.ACTIVE)
                 .build();
     }
 
     public static CreateReservationDto getCreateReservationDto() {
+        return getCreateReservationDto(LocalDate.now().plusDays(3), LocalDate.now().plusDays(5));
+    }
+
+    public static CreateReservationDto getCreateReservationDto(LocalDate checkin, LocalDate checkout) {
         return CreateReservationDto.builder()
                 .fullName("fullName-test")
                 .email("test@example.com")
-                .checkin(LocalDate.now().plusDays(3))
-                .checkout(LocalDate.now().plusDays(5))
+                .checkin(checkin)
+                .checkout(checkout)
                 .build();
     }
 
     public static Reservation getReservationPreCreate() {
-        return Reservation.builder()
-                .fullName("fullName-test")
-                .email("test@example.com")
-                .checkin(LocalDate.now().plusDays(3))
-                .checkout(LocalDate.now().plusDays(5))
-                .build();
+        return getReservationPreCreate(LocalDate.now().plusDays(3), LocalDate.now().plusDays(5));
     }
 
     public static Reservation getReservationPreCreate(LocalDate checkin, LocalDate checkout) {
@@ -49,14 +52,7 @@ public class ReservationDataTestUtil {
     }
 
     public static Reservation getReservationEntity() {
-        return Reservation.builder()
-                .id("id-test")
-                .fullName("fullName-test")
-                .email("test@example.com")
-                .checkin(LocalDate.now().plusDays(3))
-                .checkout(LocalDate.now().plusDays(5))
-                .status(ReservationStatus.ACTIVE)
-                .build();
+        return getReservationEntity(LocalDate.now().plusDays(3), LocalDate.now().plusDays(5));
     }
 
     public static Reservation getReservationEntity(LocalDate checkin, LocalDate checkout) {

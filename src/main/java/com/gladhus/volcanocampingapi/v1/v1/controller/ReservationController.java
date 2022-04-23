@@ -71,7 +71,7 @@ public class ReservationController {
     })
     @Operation(summary = "Updates an existing reservation with the information provided.")
     public ResponseEntity<ReservationDto> updateReservation(@PathVariable String id, @RequestBody CreateReservationDto createReservationDto) throws GenericException {
-        return new ResponseEntity<>(reservationAdapter.updateReservation(id, createReservationDto), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(reservationAdapter.updateReservation(id, createReservationDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -91,9 +91,9 @@ public class ReservationController {
             @ApiResponse(responseCode = "400", description = "Error(s) related to validating the information provided.", content = @Content)
     })
     @Operation(summary = "Provides a list dates that are available for reserving.")
-    public ResponseEntity<List<LocalDate>> getAvailabilities(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) throws GenericException {
-        return new ResponseEntity<>(new ArrayList<>(reservationAdapter.getAvailabilities(startDate, endDate)), HttpStatus.OK);
+    public ResponseEntity<List<LocalDate>> getAvailabilities(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromDate,
+                                                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate toDate) throws GenericException {
+        return new ResponseEntity<>(new ArrayList<>(reservationAdapter.getAvailabilities(fromDate, toDate)), HttpStatus.OK);
     }
 
 }
