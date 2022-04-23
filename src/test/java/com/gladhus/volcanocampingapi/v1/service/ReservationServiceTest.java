@@ -102,11 +102,10 @@ class ReservationServiceTest {
                 .thenReturn(Optional.of(reservationList));
 
         Set<LocalDate> result = testee.getAvailabilities(fromDate, toDate);
-
-        assertThat(result).hasSize(8);
-        assertThat(result).doesNotContain(LocalDate.now());
-        assertThat(result).doesNotContain(LocalDate.now().plusDays(1));
-        assertThat(result).doesNotContain(LocalDate.now().plusDays(4));
+        assertThat(result).hasSize(8)
+                .doesNotContain(LocalDate.now())
+                .doesNotContain(LocalDate.now().plusDays(1))
+                .doesNotContain(LocalDate.now().plusDays(4));
     }
 
     @Test
