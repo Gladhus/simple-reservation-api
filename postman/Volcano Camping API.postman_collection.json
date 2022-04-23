@@ -1,169 +1,162 @@
 {
-	"info": {
-		"_postman_id": "c827792f-3893-4754-8b2c-d1d49486bdf1",
-		"name": "Volcano Camping API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Create Reservation",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"email\":\"test@test.com\",\n    \"fullName\":\"Charles-Antoine Chartrand\",\n    \"checkin\": \"2022-05-15\",\n    \"checkout\": \"2022-05-16\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:6868/api/v1.1/reservation",
-					"host": [
-						"localhost"
-					],
-					"port": "6868",
-					"path": [
-						"api",
-						"v1.1",
-						"reservation"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Reservation",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"email\":\"test@example.com\",\n    \"fullName\":\"Charles-Antoine Chartrand\",\n    \"checkin\": \"2022-05-16\",\n    \"checkout\": \"2022-05-17\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/api/v1.1/reservation/{{id}}",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1.1",
-						"reservation",
-						"{{id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Reservation",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/v1.1/reservation/{{id}}",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1.1",
-						"reservation",
-						"{{id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Cancel Reservation",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/v1.1/reservation/{{id}}",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1.1",
-						"reservation",
-						"{{id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Availabilities",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/v1.1/reservation/availabilities",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1.1",
-						"reservation",
-						"availabilities"
-					],
-					"query": [
-						{
-							"key": "startDate",
-							"value": "2022-04-20",
-							"disabled": true
-						},
-						{
-							"key": "endDate",
-							"value": "2022-05-20",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "id",
-			"value": "4028825880450f3b0180450f9cb00000"
-		}
-	]
+    "info": {
+        "_postman_id": "c827792f-3893-4754-8b2c-d1d49486bdf1",
+        "name": "Volcano Camping API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [{
+            "name": "Create Reservation",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\":\"test@test.com\",\n    \"fullName\":\"Test Fullname\",\n    \"checkin\": \"2022-05-01\",\n    \"checkout\": \"2022-05-02\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "localhost:8080/api/v1.1/reservation",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "api",
+                        "v1.1",
+                        "reservation"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Reservation",
+            "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\":\"test@example.com\",\n    \"fullName\":\"Test Fullname\",\n    \"checkin\": \"2022-05-16\",\n    \"checkout\": \"2022-05-17\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "localhost:8080/api/v1.1/reservation/{{id}}",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "api",
+                        "v1.1",
+                        "reservation",
+                        "{{id}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Reservation",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8080/api/v1.1/reservation/{{id}}",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "api",
+                        "v1.1",
+                        "reservation",
+                        "{{id}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Cancel Reservation",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8080/api/v1.1/reservation/{{id}}",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "api",
+                        "v1.1",
+                        "reservation",
+                        "{{id}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Availabilities",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8080/api/v1.1/reservation/availabilities?fromDate=2022-05-14&toDate=2022-05-17",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "api",
+                        "v1.1",
+                        "reservation",
+                        "availabilities"
+                    ],
+                    "query": [{
+                            "key": "fromDate",
+                            "value": "2022-05-14"
+                        },
+                        {
+                            "key": "toDate",
+                            "value": "2022-05-17"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        }
+    ],
+    "event": [{
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [{
+        "key": "id",
+        "value": "4028825880450f3b0180450f9cb00000"
+    }]
 }
