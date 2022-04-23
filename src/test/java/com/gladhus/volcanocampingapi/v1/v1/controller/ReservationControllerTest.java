@@ -6,7 +6,7 @@ import com.gladhus.volcanocampingapi.domain.Reservation;
 import com.gladhus.volcanocampingapi.domain.ReservationStatus;
 import com.gladhus.volcanocampingapi.repository.ReservationRepository;
 import com.gladhus.volcanocampingapi.v1.v1.dto.CreateReservationDto;
-import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTest;
+import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTestUtil;
 import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +43,8 @@ class ReservationControllerTest extends AbstractMySQLContainerBasedTest {
 
     @Test
     @Transactional
-    public void givenReservation_whenGetReservation_thenReservation() throws Exception {
-        Reservation reservation = ReservationDataTest.getReservationEntity();
+    void givenReservation_whenGetReservation_thenReservation() throws Exception {
+        Reservation reservation = ReservationDataTestUtil.getReservationEntity();
         reservation = reservationRepository.save(reservation);
 
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1.1/reservation/" + reservation.getId()));
@@ -59,7 +59,7 @@ class ReservationControllerTest extends AbstractMySQLContainerBasedTest {
     }
 
     @Test
-    public void givenNoReservation_whenGetReservation_thenNotFound() throws Exception {
+    void givenNoReservation_whenGetReservation_thenNotFound() throws Exception {
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1.1/reservation/" + "invalid-id"));
 
         response.andExpect(MockMvcResultMatchers.status().isNotFound())
@@ -69,8 +69,8 @@ class ReservationControllerTest extends AbstractMySQLContainerBasedTest {
 
     @Test
     @Transactional
-    public void givenNoReservation_whenCreateReservation_thenReservation() throws Exception {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+    void givenNoReservation_whenCreateReservation_thenReservation() throws Exception {
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
 
         ResultActions responseCreate = mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1.1/reservation")
@@ -99,9 +99,9 @@ class ReservationControllerTest extends AbstractMySQLContainerBasedTest {
 
     @Test
     @Transactional
-    public void givenReservation_whenCreateReservationAtSameDates_thenForbidden() throws Exception {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
-        Reservation reservationEntity = ReservationDataTest.getReservationEntity(createReservationDto.getCheckin(), createReservationDto.getCheckout());
+    void givenReservation_whenCreateReservationAtSameDates_thenForbidden() throws Exception {
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
+        Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity(createReservationDto.getCheckin(), createReservationDto.getCheckout());
 
         reservationRepository.save(reservationEntity);
 

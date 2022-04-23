@@ -8,7 +8,7 @@ import java.time.LocalDate;
  * Util class to create entities or DTOs for other tests.
  * This helps reduce code duplication in tests and also make the tests easier to read.
  */
-public class ReservationDataTest {
+public class ReservationDataTestUtil {
 
     public static ReservationDto getReservationDto() {
         return ReservationDto.builder()

@@ -4,7 +4,7 @@ import com.gladhus.volcanocampingapi.domain.Reservation;
 import com.gladhus.volcanocampingapi.exception.GenericException;
 import com.gladhus.volcanocampingapi.v1.service.ReservationService;
 import com.gladhus.volcanocampingapi.v1.v1.dto.CreateReservationDto;
-import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTest;
+import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTestUtil;
 import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDto;
 import com.gladhus.volcanocampingapi.v1.v1.mapper.ReservationMapper;
 import java.time.LocalDate;
@@ -39,9 +39,9 @@ class ReservationAdapterTest {
 
     @Test
     void createReservation() throws GenericException {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
-        Reservation reservationEntity = ReservationDataTest.getReservationEntity();
-        ReservationDto reservationDto = ReservationDataTest.getReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
+        Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
+        ReservationDto reservationDto = ReservationDataTestUtil.getReservationDto();
 
         when(reservationMapper.mapToEntity(createReservationDto)).thenReturn(reservationEntity);
         when(reservationService.createReservation(reservationEntity)).thenReturn(reservationEntity);
@@ -54,7 +54,7 @@ class ReservationAdapterTest {
 
     @Test
     void createReservation_emptyEmail() {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
         createReservationDto.setEmail("");
 
         assertThatThrownBy(() -> testee.createReservation(createReservationDto))
@@ -64,7 +64,7 @@ class ReservationAdapterTest {
 
     @Test
     void createReservation_nullEmail() {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
         createReservationDto.setEmail(null);
 
         assertThatThrownBy(() -> testee.createReservation(createReservationDto))
@@ -74,7 +74,7 @@ class ReservationAdapterTest {
 
     @Test
     void createReservation_emptyFullName() {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
         createReservationDto.setFullName("");
 
         assertThatThrownBy(() -> testee.createReservation(createReservationDto))
@@ -84,7 +84,7 @@ class ReservationAdapterTest {
 
     @Test
     void createReservation_nullFullName() {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
         createReservationDto.setFullName(null);
 
         assertThatThrownBy(() -> testee.createReservation(createReservationDto))
@@ -94,7 +94,7 @@ class ReservationAdapterTest {
 
     @Test
     void createReservation_nullCheckin() {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
         createReservationDto.setCheckin(null);
 
         assertThatThrownBy(() -> testee.createReservation(createReservationDto))
@@ -104,7 +104,7 @@ class ReservationAdapterTest {
 
     @Test
     void createReservation_nullCheckout() {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
         createReservationDto.setCheckout(null);
 
         assertThatThrownBy(() -> testee.createReservation(createReservationDto))
@@ -114,9 +114,9 @@ class ReservationAdapterTest {
 
     @Test
     void updateReservation() throws GenericException {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
-        Reservation reservationEntity = ReservationDataTest.getReservationEntity();
-        ReservationDto reservationDto = ReservationDataTest.getReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
+        Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
+        ReservationDto reservationDto = ReservationDataTestUtil.getReservationDto();
 
         when(reservationMapper.mapToEntity(reservationEntity.getId(), createReservationDto)).thenReturn(reservationEntity);
         when(reservationService.updateReservation(reservationEntity)).thenReturn(reservationEntity);
@@ -129,7 +129,7 @@ class ReservationAdapterTest {
 
     @Test
     void updateReservation_emptyId() {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
 
         assertThatThrownBy(() -> testee.updateReservation("", createReservationDto))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -138,7 +138,7 @@ class ReservationAdapterTest {
 
     @Test
     void updateReservation_nullId() {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
 
         assertThatThrownBy(() -> testee.updateReservation(null, createReservationDto))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -147,8 +147,8 @@ class ReservationAdapterTest {
 
     @Test
     void getReservation() throws GenericException {
-        Reservation reservationEntity = ReservationDataTest.getReservationEntity();
-        ReservationDto reservationDto = ReservationDataTest.getReservationDto();
+        Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
+        ReservationDto reservationDto = ReservationDataTestUtil.getReservationDto();
 
         when(reservationService.getReservation(reservationEntity.getId())).thenReturn(reservationEntity);
         when(reservationMapper.mapToDto(reservationEntity)).thenReturn(reservationDto);
@@ -174,8 +174,8 @@ class ReservationAdapterTest {
 
     @Test
     void cancelReservation() throws GenericException {
-        Reservation reservationEntity = ReservationDataTest.getReservationEntity();
-        ReservationDto reservationDto = ReservationDataTest.getReservationDto();
+        Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
+        ReservationDto reservationDto = ReservationDataTestUtil.getReservationDto();
 
         when(reservationService.cancelReservation(reservationEntity.getId())).thenReturn(reservationEntity);
         when(reservationMapper.mapToDto(reservationEntity)).thenReturn(reservationDto);

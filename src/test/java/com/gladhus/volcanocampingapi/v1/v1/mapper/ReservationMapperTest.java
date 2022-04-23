@@ -4,7 +4,7 @@ package com.gladhus.volcanocampingapi.v1.v1.mapper;
 import com.gladhus.volcanocampingapi.domain.Reservation;
 import com.gladhus.volcanocampingapi.domain.ReservationStatus;
 import com.gladhus.volcanocampingapi.v1.v1.dto.CreateReservationDto;
-import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTest;
+import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTestUtil;
 import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDto;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ class ReservationMapperTest {
 
     @Test
     void mapToEntity() {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
 
         Reservation result = testee.mapToEntity(createReservationDto);
 
@@ -32,7 +32,7 @@ class ReservationMapperTest {
 
     @Test
     void mapToEntity_withId() {
-        CreateReservationDto createReservationDto = ReservationDataTest.getCreateReservationDto();
+        CreateReservationDto createReservationDto = ReservationDataTestUtil.getCreateReservationDto();
 
         Reservation result = testee.mapToEntity("id-test", createReservationDto);
 
@@ -46,7 +46,7 @@ class ReservationMapperTest {
 
     @Test
     void mapToDto() {
-        Reservation reservationEntity = ReservationDataTest.getReservationEntity();
+        Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
 
         ReservationDto result = testee.mapToDto(reservationEntity);
         assertThat(result.getId()).isEqualTo(reservationEntity.getId());

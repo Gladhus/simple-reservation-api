@@ -139,8 +139,6 @@ public class ReservationService {
     private Set<LocalDate> getAvailableDatesFromReservations(LocalDate fromDate, LocalDate toDate, List<Reservation> reservations) {
         Set<LocalDate> alreadyReservedDates = reservations.stream().flatMap(reservation -> reservation.getCheckin().datesUntil(reservation.getCheckout())).collect(Collectors.toSet());
 
-        List<LocalDate> localDateStream = fromDate.datesUntil(toDate.plusDays(1)).toList();
-
         return fromDate.datesUntil(toDate.plusDays(1))
                 .filter(date -> !alreadyReservedDates.contains(date))
                 .collect(Collectors.toCollection(TreeSet::new));

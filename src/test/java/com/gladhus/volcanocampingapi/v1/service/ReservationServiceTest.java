@@ -6,7 +6,7 @@ import com.gladhus.volcanocampingapi.exception.GenericException;
 import com.gladhus.volcanocampingapi.exception.InvalidDatesException;
 import com.gladhus.volcanocampingapi.exception.ReservationNotFoundException;
 import com.gladhus.volcanocampingapi.repository.ReservationRepository;
-import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTest;
+import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTestUtil;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class})
-public class ReservationServiceTest {
+class ReservationServiceTest {
 
     ReservationService testee;
 
@@ -38,7 +38,7 @@ public class ReservationServiceTest {
 
     @Test
     void getReservation() throws GenericException {
-        Reservation reservationEntity = ReservationDataTest.getReservationEntity();
+        Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
 
         when(reservationRepository.findById(reservationEntity.getId())).thenReturn(Optional.of(reservationEntity));
 
@@ -49,7 +49,7 @@ public class ReservationServiceTest {
 
     @Test
     void getReservation_NotFound() {
-        Reservation reservationEntity = ReservationDataTest.getReservationEntity();
+        Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
 
         when(reservationRepository.findById(reservationEntity.getId())).thenReturn(Optional.empty());
 
@@ -61,7 +61,7 @@ public class ReservationServiceTest {
 
     @Test
     void cancelReservation() throws GenericException {
-        Reservation reservationEntity = ReservationDataTest.getReservationEntity();
+        Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
 
         when(reservationRepository.findByIdAndStatus(reservationEntity.getId(), ReservationStatus.ACTIVE))
                 .thenReturn(Optional.of(reservationEntity));
@@ -78,7 +78,7 @@ public class ReservationServiceTest {
 
     @Test
     void cancelReservation_NotFound() {
-        Reservation reservationEntity = ReservationDataTest.getReservationEntity();
+        Reservation reservationEntity = ReservationDataTestUtil.getReservationEntity();
 
         when(reservationRepository.findByIdAndStatus(reservationEntity.getId(), ReservationStatus.ACTIVE))
                 .thenReturn(Optional.empty());
@@ -95,18 +95,18 @@ public class ReservationServiceTest {
         LocalDate toDate = LocalDate.now().plusDays(10);
 
         List<Reservation> reservationList = List.of(
-                ReservationDataTest.getReservationEntity(LocalDate.now(), LocalDate.now().plusDays(2)),
-                ReservationDataTest.getReservationEntity(LocalDate.now().plusDays(4), LocalDate.now().plusDays(5)));
+                ReservationDataTestUtil.getReservationEntity(LocalDate.now(), LocalDate.now().plusDays(2)),
+                ReservationDataTestUtil.getReservationEntity(LocalDate.now().plusDays(4), LocalDate.now().plusDays(5)));
 
         when(reservationRepository.findByCheckinIsBetweenOrCheckoutIsBetweenAndStatus(fromDate, toDate, fromDate, toDate, ReservationStatus.ACTIVE))
                 .thenReturn(Optional.of(reservationList));
 
         Set<LocalDate> result = testee.getAvailabilities(fromDate, toDate);
 
-        assertThat(result.size()).isEqualTo(8);
-        assertThat(result.contains(LocalDate.now())).isFalse();
-        assertThat(result.contains(LocalDate.now().plusDays(1))).isFalse();
-        assertThat(result.contains(LocalDate.now().plusDays(4))).isFalse();
+        assertThat(result).hasSize(8);
+        assertThat(result).doesNotContain(LocalDate.now());
+        assertThat(result).doesNotContain(LocalDate.now().plusDays(1));
+        assertThat(result).doesNotContain(LocalDate.now().plusDays(4));
     }
 
     @Test
@@ -133,9 +133,9 @@ public class ReservationServiceTest {
 
     @Test
     void createReservation() throws GenericException {
-        Reservation reservationInput = ReservationDataTest.getReservationPreCreate();
-        Reservation reservationOutput = ReservationDataTest.getReservationEntity();
-        Reservation reservationForInsert = ReservationDataTest.getReservationPreCreate();
+        Reservation reservationInput = ReservationDataTestUtil.getReservationPreCreate();
+        Reservation reservationOutput = ReservationDataTestUtil.getReservationEntity();
+        Reservation reservationForInsert = ReservationDataTestUtil.getReservationPreCreate();
         reservationForInsert.setStatus(ReservationStatus.ACTIVE);
 
         when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
@@ -153,7 +153,7 @@ public class ReservationServiceTest {
 
     @Test
     void createReservation_CheckinAfterCheckout() {
-        Reservation reservation = ReservationDataTest
+        Reservation reservation = ReservationDataTestUtil
                 .getReservationPreCreate(LocalDate.now().plusDays(3), LocalDate.now().plusDays(1));
 
         assertThatThrownBy(() -> testee.createReservation(reservation))
@@ -164,7 +164,7 @@ public class ReservationServiceTest {
 
     @Test
     void createReservation_LongerThan3Days() {
-        Reservation reservation = ReservationDataTest
+        Reservation reservation = ReservationDataTestUtil
                 .getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(5));
 
         assertThatThrownBy(() -> testee.createReservation(reservation))
@@ -175,7 +175,7 @@ public class ReservationServiceTest {
 
     @Test
     void createReservation_CheckoutLaterThanCheckin() {
-        Reservation reservation = ReservationDataTest
+        Reservation reservation = ReservationDataTestUtil
                 .getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(1));
 
         assertThatThrownBy(() -> testee.createReservation(reservation))
@@ -186,7 +186,7 @@ public class ReservationServiceTest {
 
     @Test
     void createReservation_AtLeastOneDayAfterToday() {
-        Reservation reservation = ReservationDataTest
+        Reservation reservation = ReservationDataTestUtil
                 .getReservationPreCreate(LocalDate.now(), LocalDate.now().plusDays(1));
 
         assertThatThrownBy(() -> testee.createReservation(reservation))
@@ -197,7 +197,7 @@ public class ReservationServiceTest {
 
     @Test
     void createReservation_CheckoutIsFurtherThanAMonth() {
-        Reservation reservation = ReservationDataTest
+        Reservation reservation = ReservationDataTestUtil
                 .getReservationPreCreate(LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(1).plusDays(2));
 
         assertThatThrownBy(() -> testee.createReservation(reservation))
@@ -208,9 +208,9 @@ public class ReservationServiceTest {
 
     @Test
     void createReservation_DatesUnavailable() {
-        Reservation reservation = ReservationDataTest
+        Reservation reservation = ReservationDataTestUtil
                 .getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(3));
-        Reservation reservationAlreadyDone = ReservationDataTest.getReservationEntity(LocalDate.now(), LocalDate.now().plusDays(2));
+        Reservation reservationAlreadyDone = ReservationDataTestUtil.getReservationEntity(LocalDate.now(), LocalDate.now().plusDays(2));
 
         when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
                 reservation.getCheckin(), reservation.getCheckout(),
@@ -226,10 +226,10 @@ public class ReservationServiceTest {
 
     @Test
     void updateReservation() throws GenericException {
-        Reservation newReservation = ReservationDataTest.getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(2));
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation newReservation = ReservationDataTestUtil.getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(2));
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
-        Reservation newReservationForSave = ReservationDataTest.getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(2));
+        Reservation newReservationForSave = ReservationDataTestUtil.getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(2));
         newReservationForSave.setId(oldReservation.getId());
         newReservationForSave.setStatus(oldReservation.getStatus());
 
@@ -249,10 +249,10 @@ public class ReservationServiceTest {
 
     @Test
     void updateReservation_sameDates() throws GenericException {
-        Reservation newReservation = ReservationDataTest.getReservationPreCreate();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation newReservation = ReservationDataTestUtil.getReservationPreCreate();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
-        Reservation newReservationForSave = ReservationDataTest.getReservationPreCreate();
+        Reservation newReservationForSave = ReservationDataTestUtil.getReservationPreCreate();
         newReservationForSave.setId(oldReservation.getId());
         newReservationForSave.setStatus(oldReservation.getStatus());
 
@@ -272,13 +272,13 @@ public class ReservationServiceTest {
 
     @Test
     void updateReservation_datesUnavailable() {
-        Reservation newReservation = ReservationDataTest.getReservationPreCreate();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation newReservation = ReservationDataTestUtil.getReservationPreCreate();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
-        Reservation newReservationForSave = ReservationDataTest.getReservationPreCreate();
+        Reservation newReservationForSave = ReservationDataTestUtil.getReservationPreCreate();
         newReservationForSave.setId(oldReservation.getId());
         newReservationForSave.setStatus(oldReservation.getStatus());
-        Reservation reservationConflict = ReservationDataTest.getReservationEntity();
+        Reservation reservationConflict = ReservationDataTestUtil.getReservationEntity();
         reservationConflict.setId("id-test-2");
 
         when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
@@ -297,7 +297,7 @@ public class ReservationServiceTest {
     @Test
     void updateReservation_onlyFullName() throws GenericException {
         Reservation newReservation = Reservation.builder().fullName("fullName-test").build();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
 
         Reservation newReservationForSave = Reservation.builder().fullName("fullName-test").build();
@@ -324,7 +324,7 @@ public class ReservationServiceTest {
     @Test
     void updateReservation_onlyEmail() throws GenericException {
         Reservation newReservation = Reservation.builder().email("email@example.com").build();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
 
         Reservation newReservationForSave = Reservation.builder().email("email@example.com").build();
@@ -351,7 +351,7 @@ public class ReservationServiceTest {
     @Test
     void updateReservation_onlyCheckin() throws GenericException {
         Reservation newReservation = Reservation.builder().checkin(LocalDate.now().plusDays(4)).build();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
 
         Reservation newReservationForSave = Reservation.builder().checkin(LocalDate.now().plusDays(4)).build();
@@ -378,7 +378,7 @@ public class ReservationServiceTest {
     @Test
     void updateReservation_onlyCheckin_StayLongerThan3Days() throws GenericException {
         Reservation newReservation = Reservation.builder().checkin(LocalDate.now().plusDays(1)).build();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
 
         Reservation newReservationForSave = Reservation.builder().checkin(LocalDate.now().plusDays(1)).build();
@@ -399,7 +399,7 @@ public class ReservationServiceTest {
     @Test
     void updateReservation_onlyCheckin_CheckinAfterCheckout() throws GenericException {
         Reservation newReservation = Reservation.builder().checkin(LocalDate.now().plusDays(6)).build();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
 
         Reservation newReservationForSave = Reservation.builder().checkin(LocalDate.now().plusDays(6)).build();
@@ -420,7 +420,7 @@ public class ReservationServiceTest {
     @Test
     void updateReservation_onlyCheckout() throws GenericException {
         Reservation newReservation = Reservation.builder().checkout(LocalDate.now().plusDays(4)).build();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
 
         Reservation newReservationForSave = Reservation.builder().checkout(LocalDate.now().plusDays(4)).build();
@@ -447,7 +447,7 @@ public class ReservationServiceTest {
     @Test
     void updateReservation_onlyCheckout_StayLongerThan3Days() throws GenericException {
         Reservation newReservation = Reservation.builder().checkout(LocalDate.now().plusDays(8)).build();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
 
         Reservation newReservationForSave = Reservation.builder().checkout(LocalDate.now().plusDays(8)).build();
@@ -468,7 +468,7 @@ public class ReservationServiceTest {
     @Test
     void updateReservation_onlyCheckout_CheckinAfterCheckout() throws GenericException {
         Reservation newReservation = Reservation.builder().checkout(LocalDate.now()).build();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
 
         Reservation newReservationForSave = Reservation.builder().checkout(LocalDate.now()).build();
@@ -489,7 +489,7 @@ public class ReservationServiceTest {
     @Test
     void updateReservation_CheckinAndCheckout_CheckinToday() {
         Reservation newReservation = Reservation.builder().checkin(LocalDate.now()).checkout(LocalDate.now().plusDays(2)).build();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
 
         Reservation newReservationForSave = Reservation.builder().checkin(LocalDate.now()).checkout(LocalDate.now().plusDays(2)).build();
@@ -512,7 +512,7 @@ public class ReservationServiceTest {
                 .checkin(LocalDate.now().plusMonths(1))
                 .checkout(LocalDate.now().plusMonths(1).plusDays(1))
                 .build();
-        Reservation oldReservation = ReservationDataTest.getReservationEntity();
+        Reservation oldReservation = ReservationDataTestUtil.getReservationEntity();
         newReservation.setId(oldReservation.getId());
 
         Reservation newReservationForSave = Reservation.builder()

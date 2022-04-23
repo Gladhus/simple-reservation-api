@@ -22,6 +22,8 @@ import static org.springframework.util.Assert.notNull;
 @Component
 public class ReservationAdapter {
 
+    private static final String ID_REQUIRED_MESSAGE = "Reservation id is required.";
+
     private final ReservationMapper reservationMapper;
 
     private final ReservationService reservationService;
@@ -57,7 +59,7 @@ public class ReservationAdapter {
      * @throws GenericException if any exception was raised during mapping or update of the reservation.
      */
     public ReservationDto updateReservation(String id, CreateReservationDto createReservationDto) throws GenericException {
-        hasText(id, "Reservation id is required.");
+        hasText(id, ID_REQUIRED_MESSAGE);
 
         return reservationMapper.mapToDto(reservationService.updateReservation(reservationMapper.mapToEntity(id, createReservationDto)));
     }
@@ -69,7 +71,7 @@ public class ReservationAdapter {
      * @throws GenericException if any exception was raised getting or mapping the reservation.
      */
     public ReservationDto getReservation(String id) throws GenericException {
-        hasText(id, "Reservation id is required.");
+        hasText(id, ID_REQUIRED_MESSAGE);
 
         return reservationMapper.mapToDto(reservationService.getReservation(id));
     }
@@ -81,7 +83,7 @@ public class ReservationAdapter {
      * @throws GenericException if any exception was raised cancelling the reservation.
      */
     public ReservationDto cancelReservation(String id) throws GenericException {
-        hasText(id, "Reservation id is required.");
+        hasText(id, ID_REQUIRED_MESSAGE);
 
         return reservationMapper.mapToDto(reservationService.cancelReservation(id));
     }
