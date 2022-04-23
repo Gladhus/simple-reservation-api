@@ -1,22 +1,22 @@
 package com.gladhus.volcanocampingapi.v1.v1.controller;
 
-import com.gladhus.volcanocampingapi.config.SwaggerConfig;
+import com.gladhus.volcanocampingapi.exception.GenericException;
 import com.gladhus.volcanocampingapi.v1.v1.adapter.ReservationAdapter;
 import com.gladhus.volcanocampingapi.v1.v1.dto.CreateReservationDto;
 import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDto;
-import com.gladhus.volcanocampingapi.exception.GenericException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1.1/reservation")
-@Api(tags = SwaggerConfig.TAG_RESERVATION_API)
+@Tag(name = "Reservation", description = "All operations related to reservations.")
 public class ReservationController {
 
     private final ReservationAdapter reservationAdapter;
@@ -42,56 +42,58 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "Error(s) related to validating the information provided."),
-            @ApiResponse(code = 404, message = "Reservation could not be found.")
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReservationDto.class))),
+            @ApiResponse(responseCode = "400", description = "Error(s) related to validating the information provided.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Reservation could not be found.", content = @Content)
     })
-    @ApiOperation(value = "Returns the details of a reservation for the id.", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Returns the details of a reservation for the id.")
     public ResponseEntity<ReservationDto> getReservationById(@PathVariable String id) throws GenericException {
         return new ResponseEntity<>(reservationAdapter.getReservation(id), HttpStatus.OK);
     }
 
     @PostMapping
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created"),
-            @ApiResponse(code = 400, message = "Error(s) related to validating the information provided.")
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReservationDto.class))),
+            @ApiResponse(responseCode = "400", description = "Error(s) related to validating the information provided.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Reservation could not be done for provided dates.", content = @Content)
     })
-    @ApiOperation(value = "Creates a new reservation with the information provided.", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Creates a new reservation with the information provided.")
     public ResponseEntity<ReservationDto> createReservation(@RequestBody CreateReservationDto createReservationDto) throws GenericException {
         return new ResponseEntity<>(reservationAdapter.createReservation(createReservationDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "Error(s) related to validating the information provided."),
-            @ApiResponse(code = 404, message = "Reservation could not be found.")
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReservationDto.class))),
+            @ApiResponse(responseCode = "400", description = "Error(s) related to validating the information provided.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Reservation could not be done for provided dates.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Reservation could not be found.", content = @Content)
     })
-    @ApiOperation(value = "Updates an existing reservation with the information provided.", httpMethod = "PUT", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Updates an existing reservation with the information provided.")
     public ResponseEntity<ReservationDto> updateReservation(@PathVariable String id, @RequestBody CreateReservationDto createReservationDto) throws GenericException {
         return new ResponseEntity<>(reservationAdapter.updateReservation(id, createReservationDto), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "Error(s) related to validating the information provided."),
-            @ApiResponse(code = 404, message = "Reservation could not be found.")
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReservationDto.class))),
+            @ApiResponse(responseCode = "400", description = "Error(s) related to validating the information provided.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Reservation could not be found.", content = @Content)
     })
-    @ApiOperation(value = "Cancels an existing reservation with the id provided.", httpMethod = "DELETE", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Cancels an existing reservation with the id provided.")
     public ResponseEntity<ReservationDto> cancelReservation(@PathVariable String id) throws GenericException {
         return new ResponseEntity<>(reservationAdapter.cancelReservation(id), HttpStatus.OK);
     }
 
     @GetMapping("/availabilities")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "Error(s) related to validating the information provided.")
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = LocalDate.class)))),
+            @ApiResponse(responseCode = "400", description = "Error(s) related to validating the information provided.", content = @Content)
     })
-    @ApiOperation(value = "Provides a list dates that are available for reserving.", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<LocalDate>> getAvailabilities(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) throws GenericException {
-        return new ResponseEntity<>(reservationAdapter.getAvailabilities(startDate, endDate), HttpStatus.OK);
+    @Operation(summary = "Provides a list dates that are available for reserving.")
+    public ResponseEntity<List<LocalDate>> getAvailabilities(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) throws GenericException {
+        return new ResponseEntity<>(new ArrayList<>(reservationAdapter.getAvailabilities(startDate, endDate)), HttpStatus.OK);
     }
 
 }

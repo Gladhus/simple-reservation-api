@@ -12,3 +12,9 @@ To run the tests locally you can run the command `mvn test`.
 
 ### Docker
 The docker daemon is required to run the integration tests and is also the easiest way to run the project locally.
+
+## Swagger
+
+It is possible to access the swagger documentation by going to `http://{BASE_URL}/swagger-ui/index.html`.
+
+For example in local : `http://localhost:8080/swagger-ui/index.html`
