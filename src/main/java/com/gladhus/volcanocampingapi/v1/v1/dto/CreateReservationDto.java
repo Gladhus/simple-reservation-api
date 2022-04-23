@@ -1,6 +1,5 @@
 package com.gladhus.volcanocampingapi.v1.v1.dto;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

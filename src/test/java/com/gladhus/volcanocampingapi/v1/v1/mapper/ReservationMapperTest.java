@@ -6,17 +6,11 @@ import com.gladhus.volcanocampingapi.domain.ReservationStatus;
 import com.gladhus.volcanocampingapi.v1.v1.dto.CreateReservationDto;
 import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTest;
 import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDto;
-import com.gladhus.volcanocampingapi.v1.v1.mapper.ReservationMapper;
-import java.time.LocalDate;
-import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class ReservationMapperTest {
 

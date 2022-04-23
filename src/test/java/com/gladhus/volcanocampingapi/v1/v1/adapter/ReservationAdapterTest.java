@@ -2,7 +2,6 @@ package com.gladhus.volcanocampingapi.v1.v1.adapter;
 
 import com.gladhus.volcanocampingapi.domain.Reservation;
 import com.gladhus.volcanocampingapi.exception.GenericException;
-import com.gladhus.volcanocampingapi.exception.ReservationNotFoundException;
 import com.gladhus.volcanocampingapi.v1.service.ReservationService;
 import com.gladhus.volcanocampingapi.v1.v1.dto.CreateReservationDto;
 import com.gladhus.volcanocampingapi.v1.v1.dto.ReservationDataTest;
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
 
 import static org.assertj.core.api.Assertions.assertThat;

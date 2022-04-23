@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+/**
+ * Service class that handles all business logic surrounding reservations.
+ */
 @Service
 public class ReservationService {
 
@@ -29,8 +32,14 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
+    /**
+     * Service operation that validates a reservation and saves it through the repository.
+     * @param reservation The reservation to be created.
+     * @return the {@link Reservation} that was created.
+     * @throws InvalidDatesException if any validation fails on the reservation.
+     */
     @Transactional(propagation = Propagation.REQUIRED)
-    public Reservation createReservation(Reservation reservation) throws GenericException {
+    public Reservation createReservation(Reservation reservation) throws InvalidDatesException {
 
         validateDatesForCreation(reservation);
 
@@ -38,8 +47,15 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    /**
+     * Service operation that merges new and old reservation, validates the new data and saves it through the repository.
+     * @param newReservation reservation object that contains the values to update on the existing reservation.
+     * @return the final {@link Reservation} after update.
+     * @throws InvalidDatesException if any validation fails on the reservation.
+     * @throws ReservationNotFoundException if no reservation was found for the id provided.
+     */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {GenericException.class})
-    public Reservation updateReservation(Reservation newReservation) throws GenericException {
+    public Reservation updateReservation(Reservation newReservation) throws InvalidDatesException, ReservationNotFoundException {
 
         Reservation oldReservation = reservationRepository.findById(newReservation.getId()).orElseThrow(ReservationNotFoundException::new);
 
@@ -59,19 +75,32 @@ public class ReservationService {
             newReservation.setEmail(oldReservation.getEmail());
         }
 
-        validateDatesForCreation(newReservation, true);
+        validateDatesForCreation(newReservation);
 
         newReservation.setStatus(ReservationStatus.ACTIVE);
         return reservationRepository.save(newReservation);
     }
 
+    /**
+     * Service operation that finds a reservation by its id.
+     * @param id id of the reservation to find.
+     * @return the {@link Reservation} corresponding to the id provided.
+     * @throws ReservationNotFoundException if no reservation was found for the id provided.
+     */
     @Transactional(propagation = Propagation.REQUIRED)
-    public Reservation getReservation(String id) throws GenericException{
+    public Reservation getReservation(String id) throws ReservationNotFoundException {
         return reservationRepository.findById(id).orElseThrow(ReservationNotFoundException::new);
     }
 
+    /**
+     * Service operation that sets the status of the reservation corresponding to the id provided
+     * to {@link ReservationStatus#CANCELLED}
+     * @param id id of the reservation to cancel.
+     * @return the {@link Reservation} that was cancelled with the updated status.
+     * @throws ReservationNotFoundException if no reservation was found for the id provided.
+     */
     @Transactional(propagation = Propagation.REQUIRED)
-    public Reservation cancelReservation(String id) throws GenericException {
+    public Reservation cancelReservation(String id) throws ReservationNotFoundException {
         Reservation reservation = reservationRepository.findByIdAndStatus(id, ReservationStatus.ACTIVE).orElseThrow(ReservationNotFoundException::new);
 
         reservation.setStatus(ReservationStatus.CANCELLED);
@@ -79,8 +108,17 @@ public class ReservationService {
         return reservation;
     }
 
+    /**
+     * Service operation that returns all available reservation dates in the range provided.
+     * This operation checks all active reservations within the date range and makes sure that all dates returned are
+     * available at the moment of the call.
+     * @param fromDate start of the range
+     * @param toDate end of the range
+     * @return {@link TreeSet} of {@link LocalDate} representing all available dates.
+     * @throws InvalidDatesException if there is an error with the dates provided.
+     */
     @Transactional(propagation = Propagation.REQUIRED)
-    public Set<LocalDate> getAvailabilities(LocalDate fromDate, LocalDate toDate) throws GenericException {
+    public Set<LocalDate> getAvailabilities(LocalDate fromDate, LocalDate toDate) throws InvalidDatesException {
 
         // Check that the toDate is after fromDate
         if (!toDate.isAfter(fromDate)) {
@@ -109,10 +147,6 @@ public class ReservationService {
     }
 
     private void validateDatesForCreation(Reservation reservation) throws InvalidDatesException {
-        validateDatesForCreation(reservation, false);
-    }
-
-    private void validateDatesForCreation(Reservation reservation, boolean excludeCurrentReservation) throws InvalidDatesException {
         // Check if checkin date is before checkout date
         if (reservation.getCheckin().isAfter(reservation.getCheckout())) {
             throw new InvalidDatesException("The checkout date should be after the checkin date.");
