@@ -9,7 +9,7 @@ services:
             - MYSQL_DATABASE=$MYSQLDB_DATABASE
         volumes:
             - db:/var/lib/mysql
-    app:
+    volcano-camping-api:
         depends_on:
             - mysqldb
         build: ./
@@ -29,7 +29,5 @@ services:
               }'
         volumes:
             - .m2:/root/.m2
-        stdin_open: true
-        tty: true
 volumes:
     db:

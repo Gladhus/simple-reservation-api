@@ -15,9 +15,8 @@
     <description>volcano-camping-api</description>
     <properties>
         <java.version>18</java.version>
-        <mockito.version>4.5.0</mockito.version>
-        <springfox-swagger.version>3.0.0</springfox-swagger.version>
-        <byte-buddy.version>1.12.9</byte-buddy.version>
+        <springdoc-openapi.version>1.6.8</springdoc-openapi.version>
+        <testcontainers.version>1.17.1</testcontainers.version>
     </properties>
     <dependencies>
         <dependency>
@@ -27,11 +26,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.8</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -46,7 +40,11 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>${byte-buddy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
@@ -58,25 +56,24 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>1.17.1</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.17.1</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>mysql</artifactId>
-            <version>1.17.1</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
 
