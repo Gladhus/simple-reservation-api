@@ -25,7 +25,6 @@ services:
                 "spring.datasource.driverClassName" : "com.mysql.cj.jdbc.Driver",
                 "spring.jpa.database-platform" : "org.hibernate.dialect.MySQL5InnoDBDialect",
                 "spring.jpa.hibernate.ddl-auto" : "update",
-                "spring.jpa.show-sql" : "true",
                 "server.port" : "8081"
               }'
         volumes:
