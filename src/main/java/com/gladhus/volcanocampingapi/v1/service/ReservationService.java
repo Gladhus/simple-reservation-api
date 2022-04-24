@@ -130,7 +130,7 @@ public class ReservationService {
             throw new InvalidDatesException("The toDate cannot be more than a month in the future.");
         }
 
-        List<Reservation> reservations = reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus(fromDate, toDate, fromDate, toDate, ReservationStatus.ACTIVE)
+        List<Reservation> reservations = reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus(fromDate, toDate, ReservationStatus.ACTIVE)
                 .orElse(new ArrayList<>());
 
         return getAvailableDatesFromReservations(fromDate, toDate, reservations);
@@ -180,7 +180,6 @@ public class ReservationService {
         // Get all active reservation within date range
         List<Reservation> reservationsWithinDateRange =
                 reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
-                                reservation.getCheckin(), reservation.getCheckout(),
                                 reservation.getCheckin(), reservation.getCheckout(),
                                 ReservationStatus.ACTIVE).orElse(new ArrayList<>())
                         .stream()
