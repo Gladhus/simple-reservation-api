@@ -227,4 +227,23 @@ class ReservationControllerTest extends AbstractMySQLContainerBasedTest {
                 .andExpect(jsonPath("$.[1]", is(equalTo(reservationEntity.getCheckout().toString()))));
     }
 
+    @Test
+    @Transactional
+    void givenCancelledReservation_whenGetAvailabilities_thenAvailableOnAllDates() throws Exception {
+        Reservation tmpEntity = getReservationEntity();
+        tmpEntity.setStatus(ReservationStatus.CANCELLED);
+        Reservation reservationEntity = reservationRepository.save(tmpEntity);
+
+        ResultActions response = mockMvc.perform(get("/api/v1.1/reservation/availabilities")
+                .param("fromDate", reservationEntity.getCheckin().minusDays(1).toString())
+                .param("toDate", reservationEntity.getCheckout().toString()));
+
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(equalTo(4))))
+                .andExpect(jsonPath("$.[0]", is(equalTo(reservationEntity.getCheckin().minusDays(1).toString()))))
+                .andExpect(jsonPath("$.[1]", is(equalTo(reservationEntity.getCheckin().toString()))))
+                .andExpect(jsonPath("$.[2]", is(equalTo(reservationEntity.getCheckin().plusDays(1).toString()))))
+                .andExpect(jsonPath("$.[3]", is(equalTo(reservationEntity.getCheckout().toString()))));
+    }
+
 }

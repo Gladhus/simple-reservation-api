@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +24,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
      */
     @Transactional(propagation = Propagation.MANDATORY)
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<List<Reservation>> findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(LocalDate checkoutStartDate, LocalDate checkoutEndDate,
-                                                                                   LocalDate checkinStartDate, LocalDate checkinEndDate,
-                                                                                   ReservationStatus status);
+    @Query("from Reservation r where r.status in :status and (r.checkin between :checkinStartDate and :checkinEndDate or r.checkout between :checkoutStartDate and :checkoutEndDate)")
+    Optional<List<Reservation>> findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(LocalDate checkoutStartDate, LocalDate checkoutEndDate,
+                                                                                      LocalDate checkinStartDate, LocalDate checkinEndDate,
+                                                                                      ReservationStatus status);
 
     @Transactional(propagation = Propagation.MANDATORY)
-    Optional<List<Reservation>> findByCheckinIsBetweenOrCheckoutIsBetweenAndStatus(LocalDate checkinStartDate, LocalDate checkinEndDate,
-                                                                                              LocalDate checkoutStartDate, LocalDate checkoutEndDate,
-                                                                                              ReservationStatus status);
+    @Query("from Reservation r where r.status in :status and (r.checkin between :checkinStartDate and :checkinEndDate or r.checkout between :checkoutStartDate and :checkoutEndDate)")
+    Optional<List<Reservation>> findByCheckoutOrCheckinIsBetweenAndStatus(LocalDate checkinStartDate, LocalDate checkinEndDate,
+                                                                          LocalDate checkoutStartDate, LocalDate checkoutEndDate,
+                                                                          ReservationStatus status);
 }

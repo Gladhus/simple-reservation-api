@@ -98,7 +98,7 @@ class ReservationServiceTest {
                 ReservationDataTestUtil.getReservationEntity(LocalDate.now(), LocalDate.now().plusDays(2)),
                 ReservationDataTestUtil.getReservationEntity(LocalDate.now().plusDays(4), LocalDate.now().plusDays(5)));
 
-        when(reservationRepository.findByCheckinIsBetweenOrCheckoutIsBetweenAndStatus(fromDate, toDate, fromDate, toDate, ReservationStatus.ACTIVE))
+        when(reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus(fromDate, toDate, fromDate, toDate, ReservationStatus.ACTIVE))
                 .thenReturn(Optional.of(reservationList));
 
         Set<LocalDate> result = testee.getAvailabilities(fromDate, toDate);
@@ -137,7 +137,7 @@ class ReservationServiceTest {
         Reservation reservationForInsert = ReservationDataTestUtil.getReservationPreCreate();
         reservationForInsert.setStatus(ReservationStatus.ACTIVE);
 
-        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+        when(reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
                             reservationInput.getCheckin(), reservationInput.getCheckout(),
                             reservationInput.getCheckin(), reservationInput.getCheckout(),
                             ReservationStatus.ACTIVE))
@@ -211,7 +211,7 @@ class ReservationServiceTest {
                 .getReservationPreCreate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(3));
         Reservation reservationAlreadyDone = ReservationDataTestUtil.getReservationEntity(LocalDate.now(), LocalDate.now().plusDays(2));
 
-        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+        when(reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
                 reservation.getCheckin(), reservation.getCheckout(),
                 reservation.getCheckin(), reservation.getCheckout(),
                 ReservationStatus.ACTIVE))
@@ -233,7 +233,7 @@ class ReservationServiceTest {
         newReservationForSave.setStatus(oldReservation.getStatus());
 
         when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
-        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+        when(reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
                 newReservation.getCheckin(), newReservation.getCheckout(),
                 newReservation.getCheckin(), newReservation.getCheckout(),
                 ReservationStatus.ACTIVE))
@@ -256,7 +256,7 @@ class ReservationServiceTest {
         newReservationForSave.setStatus(oldReservation.getStatus());
 
         when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
-        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+        when(reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
                 newReservation.getCheckin(), newReservation.getCheckout(),
                 newReservation.getCheckin(), newReservation.getCheckout(),
                 ReservationStatus.ACTIVE))
@@ -281,7 +281,7 @@ class ReservationServiceTest {
         reservationConflict.setId("id-test-2");
 
         when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
-        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+        when(reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
                 newReservation.getCheckin(), newReservation.getCheckout(),
                 newReservation.getCheckin(), newReservation.getCheckout(),
                 ReservationStatus.ACTIVE))
@@ -307,7 +307,7 @@ class ReservationServiceTest {
         newReservationForSave.setEmail(oldReservation.getEmail());
 
         when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
-        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+        when(reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
                 newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
                 newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
                 ReservationStatus.ACTIVE))
@@ -334,7 +334,7 @@ class ReservationServiceTest {
         newReservationForSave.setFullName(oldReservation.getFullName());
 
         when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
-        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+        when(reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
                 newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
                 newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
                 ReservationStatus.ACTIVE))
@@ -361,7 +361,7 @@ class ReservationServiceTest {
         newReservationForSave.setFullName(oldReservation.getFullName());
 
         when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
-        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+        when(reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
                 newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
                 newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
                 ReservationStatus.ACTIVE))
@@ -430,7 +430,7 @@ class ReservationServiceTest {
         newReservationForSave.setFullName(oldReservation.getFullName());
 
         when(reservationRepository.findById(newReservation.getId())).thenReturn(Optional.of(oldReservation));
-        when(reservationRepository.findByCheckoutIsBetweenOrCheckinIsBetweenAndStatus(
+        when(reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
                 newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
                 newReservationForSave.getCheckin(), newReservationForSave.getCheckout(),
                 ReservationStatus.ACTIVE))
