@@ -11,6 +11,10 @@ The easiest way to run the project locally is to run it in docker using `docker-
 ### Tests
 To run the tests locally you can run the command `mvn test`.
 
+#### Concurrency Test
+The project includes a bash script that runs a concurrency test against the running project. 
+To run the test simply use the following command : `./test-concurrency.sh {checkin} {checkout}`
+
 ## Pre-requisites
 
 ### Docker
