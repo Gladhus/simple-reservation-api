@@ -25,7 +25,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
     @Transactional(propagation = Propagation.MANDATORY)
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("from Reservation r where r.status in :status and (r.checkin between :fromDate and :toDate or r.checkout between :fromDate and :toDate)")
-    Optional<List<Reservation>> findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(LocalDate fromDate, LocalDate toDate, ReservationStatus status);
+    Optional<List<Reservation>> findByCheckoutOrCheckinIsBetweenAndStatusForUpdate(LocalDate fromDate, LocalDate toDate, ReservationStatus status);
 
     @Transactional(propagation = Propagation.MANDATORY)
     @Query("from Reservation r where r.status in :status and (r.checkin between :fromDate and :toDate or r.checkout between :fromDate and :toDate)")

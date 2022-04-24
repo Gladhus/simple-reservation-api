@@ -179,7 +179,7 @@ public class ReservationService {
 
         // Get all active reservation within date range
         List<Reservation> reservationsWithinDateRange =
-                reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatus_Pessimistic(
+                reservationRepository.findByCheckoutOrCheckinIsBetweenAndStatusForUpdate(
                                 reservation.getCheckin(), reservation.getCheckout(),
                                 ReservationStatus.ACTIVE).orElse(new ArrayList<>())
                         .stream()
