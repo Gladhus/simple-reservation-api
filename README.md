@@ -8,6 +8,8 @@
 ### API
 The easiest way to run the project locally is to run it in docker using `docker-compose up -d --build`.
 
+The API is exposed on port 8080, so in local you can access it at `http://localhost:8080`
+
 ### Tests
 To run the tests locally you can run the command `mvn test`.
 
